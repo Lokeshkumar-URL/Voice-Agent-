@@ -1,0 +1,3349 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Sans", ui-monospace, SFMono-Regular, monospace;
+  --font-weight-medium: 400;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 600;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 800;
+}
+
+/* Custom Sleek Scrollbars with Reduced Width */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* For dark-themed sidebars or areas */
+.bg-slate-900 ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.bg-slate-900 ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Comprehensive Dark Mode Global Styles */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body,
+.dark #root,
+.dark .bg-slate-50,
+.dark .bg-slate-50\/30,
+.dark .bg-slate-100\/20,
+.dark .min-h-screen {
+  background-color: #0b0f19 !important; /* Extra Deep Midnight Blue */
+  color: #e2e8f0 !important;
+}
+
+/* Card and Sidebar Backgrounds */
+.dark .bg-white,
+.dark aside.bg-white,
+.dark header.bg-white {
+  background-color: #111827 !important; /* Charcoal Gray */
+  color: #f3f4f6 !important;
+  border-color: #1f2937 !important;
+}
+
+/* Dark theme border overrides */
+.dark .border,
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-300,
+.dark .border-slate-250,
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: #1f2937 !important;
+}
+
+/* Scrollbar adaptation for dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Interactive backgrounds */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-slate-50\/60:hover {
+  background-color: #1f2937 !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #1f2937 !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: #111827 !important;
+}
+
+/* Typography elements */
+.dark .text-slate-800,
+.dark .text-slate-900,
+.dark .text-slate-700,
+.dark .text-gray-800,
+.dark .text-gray-900 {
+  color: #f3f4f6 !important;
+}
+
+.dark .text-slate-400,
+.dark .text-slate-500,
+.dark .text-slate-600,
+.dark .text-gray-400,
+.dark .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+/* Soft accent background updates for Dark Mode */
+.dark .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #a5b4fc !important;
+}
+
+.dark .bg-emerald-50,
+.dark .bg-emerald-50\/50 {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  color: #fcd34d !important;
+}
+
+.dark .bg-red-50 {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: #fda4af !important;
+}
+
+/* Table overrides */
+.dark th {
+  background-color: #1f2937 !important;
+  color: #9ca3af !important;
+}
+
+.dark td {
+  border-bottom-color: #1f2937 !important;
+}
+
+/* Form fields input, select, textarea */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #111827 !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #6366f1 !important;
+  outline: none;
+}
+
+/* Icons & small buttons dynamic colors */
+.dark .text-slate-400 {
+  color: #9ca3af !important;
+}
+
+.dark .text-slate-500 {
+  color: #9ca3af !important;
+}
+
+/* Chart background grids & axes labels */
+.dark .recharts-cartesian-grid-horizontal line,
+.dark .recharts-cartesian-grid-vertical line {
+  stroke: #374151 !important;
+}
+
+.dark .recharts-text {
+  fill: #9ca3af !important;
+}
+
+/* Premium black and bright-gold visual system */
+:root {
+  color-scheme: dark;
+  --zea-gold-50: #f6edd2;
+  --zea-gold-100: #f0d58d;
+  --zea-gold-300: #e5b745;
+  --zea-gold-400: #dfa822;
+  --zea-gold-500: #c88e16;
+  --zea-gold-600: #a66f0c;
+  --zea-ink: #090a08;
+  --zea-panel: #10110f;
+  --zea-panel-soft: #171814;
+  --zea-line: rgba(255, 205, 46, 0.2);
+  --zea-muted: #a9a79d;
+  --zea-canvas-art:
+    radial-gradient(ellipse 72% 58% at 58% 4%, rgba(223, 168, 34, 0.92) 0%, rgba(200, 142, 22, 0.22) 44%, transparent 72%),
+    radial-gradient(ellipse 82% 108% at 106% 80%, transparent 0 42%, rgba(166, 111, 12, 0.18) 42.2% 57%, transparent 57.2%),
+    radial-gradient(ellipse 95% 120% at 101% 84%, transparent 0 61%, rgba(229, 183, 69, 0.18) 61.2% 70%, transparent 70.2%),
+    linear-gradient(132deg, transparent 0 18%, rgba(240, 213, 141, 0.2) 18.2% 31%, transparent 31.2% 42%, rgba(229, 183, 69, 0.18) 42.2% 55%, transparent 55.2%),
+    linear-gradient(145deg, #ad7911 0%, #ca921a 30%, #dfa822 58%, #bd8615 100%);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #d99e05;
+}
+
+body {
+  color: #f8f5e8;
+  background: var(--zea-canvas-art);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+::selection {
+  color: #090a08;
+  background: var(--zea-gold-300);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8d6b13;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--zea-gold-400);
+}
+
+/* Application canvas */
+.zea-premium-shell,
+.zea-premium-shell > div,
+.zea-premium-shell main,
+body .min-h-screen {
+  background: var(--zea-canvas-art) !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+/* Navigation and top bar */
+.zea-premium-shell aside {
+  background: linear-gradient(165deg, #12130f 0%, #070806 100%) !important;
+  color: #f7f3df !important;
+  border-color: rgba(255, 206, 48, 0.24) !important;
+  box-shadow: 12px 0 34px rgba(40, 27, 0, 0.24);
+}
+
+.zea-premium-shell header {
+  background: rgba(223, 168, 34, 0.82) !important;
+  color: #0a0b08 !important;
+  border-color: rgba(92, 62, 0, 0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(18px);
+}
+
+.zea-premium-shell aside [id^="sidebar-link-"] {
+  border: 1px solid transparent;
+  border-radius: 0.85rem !important;
+  color: #aaa89e !important;
+}
+
+.zea-premium-shell aside [id^="sidebar-link-"]:hover {
+  color: #ffe583 !important;
+  background: rgba(255, 197, 22, 0.08) !important;
+  border-color: rgba(255, 197, 22, 0.14);
+}
+
+.zea-premium-shell aside [id^="sidebar-link-"].bg-indigo-50,
+.zea-premium-shell aside [id^="sidebar-link-"].bg-gradient-to-r {
+  color: #0a0b08 !important;
+  background: linear-gradient(135deg, #e5b745, #dfa822) !important;
+  border-color: #e7bd55 !important;
+  box-shadow: 0 10px 24px rgba(184, 128, 15, 0.26) !important;
+}
+
+.zea-premium-shell aside [id^="sidebar-link-"] svg,
+.zea-premium-shell aside [id^="sidebar-link-"].bg-indigo-50 svg,
+.zea-premium-shell aside [id^="sidebar-link-"].bg-gradient-to-r svg {
+  color: currentColor !important;
+}
+
+/* Core surfaces: cards, dialogs, panels and tables */
+body .bg-white,
+body .dark\:bg-slate-900,
+body [role="dialog"],
+body form.bg-white {
+  color: #f8f5e8 !important;
+  background: linear-gradient(145deg, #171814 0%, #0a0b09 100%) !important;
+  border-color: var(--zea-line) !important;
+}
+
+body .bg-slate-50,
+body .bg-slate-50\/30,
+body .bg-slate-50\/50,
+body .bg-slate-50\/60,
+body .bg-slate-100,
+body .bg-gray-50 {
+  background-color: rgba(255, 255, 255, 0.045) !important;
+  border-color: rgba(255, 205, 46, 0.12) !important;
+}
+
+body .rounded-lg,
+body .rounded-xl {
+  border-radius: 0.9rem !important;
+}
+
+body .rounded-2xl,
+body .rounded-3xl {
+  border-radius: 1.35rem !important;
+}
+
+body .shadow-sm,
+body .shadow-md,
+body .shadow-lg,
+body .shadow-xl,
+body .shadow-2xl {
+  box-shadow: 0 18px 42px rgba(42, 28, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.22) !important;
+}
+
+body .border-slate-100,
+body .border-slate-200,
+body .border-slate-250,
+body .border-slate-300,
+body .border-gray-100,
+body .border-gray-200,
+body .divide-slate-100 > :not(:last-child),
+body .divide-slate-200 > :not(:last-child) {
+  border-color: var(--zea-line) !important;
+}
+
+/* Typography */
+body .text-slate-950,
+body .text-slate-900,
+body .text-slate-800,
+body .text-slate-700,
+body .text-gray-900,
+body .text-gray-800,
+body .dark\:text-white {
+  color: #f8f5e8 !important;
+}
+
+.zea-premium-shell header .text-slate-950,
+.zea-premium-shell header .text-slate-900,
+.zea-premium-shell header .text-slate-800,
+.zea-premium-shell header .text-slate-700 {
+  color: #0a0b08 !important;
+}
+
+body .text-slate-600,
+body .text-slate-500,
+body .text-slate-400,
+body .text-gray-600,
+body .text-gray-500,
+body .text-gray-400 {
+  color: var(--zea-muted) !important;
+}
+
+body .text-indigo-400,
+body .text-indigo-500,
+body .text-indigo-600,
+body .text-purple-500,
+body .text-purple-600,
+body .text-violet-500,
+body .text-violet-600,
+body .text-amber-500,
+body .text-amber-600 {
+  color: var(--zea-gold-400) !important;
+}
+
+body .text-amber-400 {
+  color: var(--zea-gold-400) !important;
+}
+
+/* Primary and accent controls */
+body .bg-indigo-500,
+body .bg-indigo-600,
+body .bg-purple-500,
+body .bg-purple-600,
+body .bg-violet-500,
+body .bg-violet-600,
+body .bg-amber-500,
+body .bg-amber-600,
+body .from-indigo-500,
+body .from-indigo-600 {
+  color: #0a0b08 !important;
+  background: linear-gradient(135deg, #e5b745, #dfa822) !important;
+  border-color: #dfa822 !important;
+  box-shadow: 0 10px 24px rgba(184, 128, 15, 0.24);
+}
+
+body .bg-indigo-50,
+body .bg-purple-50,
+body .bg-violet-50,
+body .bg-amber-50 {
+  color: #ffd84d !important;
+  background: rgba(255, 197, 22, 0.1) !important;
+  border-color: rgba(255, 205, 46, 0.22) !important;
+}
+
+body button,
+body a,
+body input,
+body select,
+body textarea {
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+body button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Forms */
+body input,
+body select,
+body textarea {
+  color: #f8f5e8 !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  border-color: rgba(255, 205, 46, 0.2) !important;
+  border-radius: 0.75rem !important;
+}
+
+body input::placeholder,
+body textarea::placeholder {
+  color: #77766f !important;
+}
+
+body input:focus,
+body select:focus,
+body textarea:focus {
+  outline: none !important;
+  border-color: var(--zea-gold-400) !important;
+  box-shadow: 0 0 0 3px rgba(169, 111, 0, 0.16) !important;
+}
+
+body option {
+  color: #f8f5e8;
+  background: #11120f;
+}
+
+body option:checked {
+  color: #fff8e1;
+  background: #855600;
+}
+
+/* Tables */
+body table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+body thead,
+body th {
+  color: #d6cda8 !important;
+  background: rgba(255, 197, 22, 0.075) !important;
+  border-color: var(--zea-line) !important;
+}
+
+body td {
+  color: #e9e5d8;
+  border-color: rgba(255, 205, 46, 0.1) !important;
+}
+
+body tbody tr:hover {
+  background: rgba(255, 197, 22, 0.045) !important;
+}
+
+/* Charts */
+body .recharts-cartesian-grid-horizontal line,
+body .recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 220, 104, 0.14) !important;
+}
+
+body .recharts-text {
+  fill: #b9b5a8 !important;
+}
+
+body .recharts-default-tooltip {
+  color: #f8f5e8 !important;
+  background: #10110f !important;
+  border: 1px solid var(--zea-line) !important;
+  border-radius: 0.8rem !important;
+}
+
+/* Modal backdrops and mobile drawer */
+body .bg-slate-900\/60,
+body .bg-black\/40,
+body .bg-black\/50 {
+  background: rgba(5, 5, 3, 0.76) !important;
+  backdrop-filter: blur(6px);
+}
+
+/* Keep status colors meaningful but tuned for the premium palette */
+body .bg-emerald-50,
+body .bg-emerald-50\/50 {
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+
+body .bg-red-50,
+body .bg-red-50 {
+  background: rgba(244, 63, 94, 0.12) !important;
+}
+
+@media (max-width: 767px) {
+  .zea-premium-shell header {
+    background: rgba(223, 168, 34, 0.9) !important;
+  }
+
+  .zea-premium-shell main {
+    padding-inline: 1rem !important;
+  }
+}
+
+/* Keep the page canvas gold after legacy surface utility overrides. */
+body .zea-premium-shell,
+body .zea-premium-shell > div,
+body .zea-premium-shell main {
+  background: var(--zea-canvas-art) !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+/* Login uses the same premium canvas and surface language. */
+body .zea-login {
+  position: relative;
+  isolation: isolate;
+  color: #f8f5e8;
+  background: #000 !important;
+}
+
+body .zea-login main,
+body .zea-login .min-h-screen,
+body .zea-login .min-h-dvh {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body .zea-login::before {
+  content: none !important;
+}
+
+.zea-login::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background: radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(75, 45, 0, 0.1) 100%);
+  pointer-events: none;
+}
+
+.zea-login-card {
+  color: #f8f5e8;
+  background: linear-gradient(150deg, rgba(25, 26, 21, 0.98), rgba(8, 9, 7, 0.99));
+  border: 1px solid rgba(255, 218, 77, 0.34);
+  box-shadow: 0 32px 80px rgba(49, 31, 0, 0.34), 0 4px 16px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(22px);
+}
+
+.zea-login-banner {
+  color: #f8f5e8;
+  background:
+    radial-gradient(circle at 50% -30%, rgba(255, 216, 77, 0.24), transparent 58%),
+    linear-gradient(145deg, #171814, #090a08);
+  border-bottom: 1px solid rgba(255, 205, 46, 0.18);
+}
+
+.zea-login-submit {
+  color: #090a08 !important;
+  background: linear-gradient(135deg, #e5b745, #dfa822) !important;
+  border: 1px solid #e7bd55;
+  box-shadow: 0 12px 28px rgba(184, 128, 15, 0.28) !important;
+}
+
+.zea-login-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #efc968, #e3ad2c) !important;
+  box-shadow: 0 16px 34px rgba(184, 128, 15, 0.36) !important;
+  transform: translateY(-1px);
+}
+
+.zea-login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.zea-login-video {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.zea-login-video-overlay {
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.2) 44%, rgba(0, 0, 0, 0.72) 73%, rgba(0, 0, 0, 0.82) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.38));
+  pointer-events: none;
+}
+
+.zea-login-frame {
+  color: #f8f5e8;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.zea-login-field {
+  border-bottom: 1px solid rgba(189, 134, 18, 0.72);
+}
+
+body .zea-login-field input {
+  color: #fff9e4 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body .zea-login-field input:focus {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body .zea-login-field input::placeholder {
+  color: rgba(255, 255, 255, 0.58) !important;
+}
+
+@media (max-width: 639px) {
+  body .zea-login {
+    background: #000 !important;
+  }
+
+  .zea-login-video {
+    display: block;
+  }
+
+  .zea-login-frame {
+    min-height: auto;
+    background: transparent;
+    backdrop-filter: none;
+  }
+}
+
+/* Shared application typography scale (aligned with Credits Manager). */
+body {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+body .text-xs {
+  font-size: 0.8125rem !important;
+  line-height: 1.25rem !important;
+}
+
+body .text-sm {
+  font-size: 0.9375rem !important;
+  line-height: 1.5rem !important;
+}
+
+body [class~="text-[8px]"],
+body [class~="text-[9px]"],
+body [class~="text-[10px]"] {
+  font-size: 0.8125rem !important;
+  line-height: 1.25rem !important;
+}
+
+body [class~="text-[11px]"] {
+  font-size: 0.8125rem !important;
+  line-height: 1.25rem !important;
+}
+
+body .text-md,
+body .text-base {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+body .text-lg {
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
+}
+
+body .text-xl {
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
+}
+
+/* Compact card/section headings use the same 16px size as sidebar menu items. */
+body h2.text-xs,
+body h3.text-xs,
+body h2.text-sm,
+body h3.text-sm,
+body h2.text-md,
+body h3.text-md,
+body h2[class~="text-[9px]"],
+body h3[class~="text-[9px]"],
+body h2[class~="text-[10px]"],
+body h3[class~="text-[10px]"],
+body h2[class~="text-[11px]"],
+body h3[class~="text-[11px]"] {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+body input,
+body select,
+body textarea {
+  font-size: 0.9375rem !important;
+  line-height: 1.5rem !important;
+}
+
+body table thead th {
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+}
+
+body table tbody td {
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+}
+
+body button {
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+}
+
+body [role="tab"],
+body [role="menuitem"],
+body .zea-phone-tab {
+  font-size: 0.9375rem !important;
+  line-height: 1.5rem !important;
+}
+
+body .rounded-full.text-xs,
+body .rounded-full[class~="text-[9px]"],
+body .rounded-full[class~="text-[10px]"],
+body .rounded-full[class~="text-[11px]"] {
+  font-size: 0.8125rem !important;
+  line-height: 1.1rem !important;
+}
+
+/* Themed table grid and non-invasive column resize handles. */
+body table th,
+body table td {
+  border-right: 1px solid rgba(255, 205, 46, 0.13) !important;
+  border-bottom: 1px solid rgba(255, 205, 46, 0.13) !important;
+  padding: 0.5rem 0.625rem !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+body table th.zea-table-text-column,
+body table td.zea-table-text-column {
+  text-align: left !important;
+}
+
+body table th:first-child,
+body table td:first-child {
+  border-left: 1px solid rgba(255, 205, 46, 0.13) !important;
+}
+
+body table thead:first-child tr:first-child th {
+  border-top: 1px solid rgba(255, 205, 46, 0.13) !important;
+}
+
+body table th {
+  position: relative;
+}
+
+.zea-column-resizer {
+  position: absolute;
+  z-index: 3;
+  top: 18%;
+  right: 0;
+  width: 8px;
+  height: 64%;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.zea-column-resizer::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 1px;
+  content: "";
+  background: rgba(255, 216, 77, 0.26);
+  transition: width 150ms ease, left 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.zea-column-resizer:hover::after,
+.zea-column-resizer.is-resizing::after {
+  left: 2px;
+  width: 2px;
+  background: var(--zea-gold-300);
+  box-shadow: 0 0 8px rgba(169, 111, 0, 0.72);
+}
+
+body.zea-resizing-column,
+body.zea-resizing-column * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* Reference-inspired premium table surfaces. */
+body table {
+  padding: 0;
+  background: #0c0e0c !important;
+  border: 1px solid rgba(255, 205, 46, 0.24) !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: 0.625rem !important;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025), 0 14px 32px rgba(0, 0, 0, 0.16);
+}
+
+body table thead,
+body table th {
+  background: linear-gradient(180deg, #222522 0%, #1a1d1b 100%) !important;
+}
+
+body table tbody,
+body table td {
+  background: #202320 !important;
+}
+
+body table th,
+body table td,
+body table th:first-child,
+body table td:first-child,
+body table thead:first-child tr:first-child th {
+  border: 0 !important;
+  border-right: 1px solid rgba(255, 205, 46, 0.13) !important;
+  border-bottom: 1px solid rgba(255, 205, 46, 0.13) !important;
+}
+
+body table th {
+  border-radius: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+body table td {
+  border-radius: 0 !important;
+}
+
+body table tr > :last-child {
+  border-right: 0 !important;
+}
+
+body table tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+body table tbody tr:hover td {
+  background: #282b26 !important;
+  border-color: rgba(255, 205, 46, 0.24) !important;
+}
+
+/* Compact, consistent spacing between application cards and panels. */
+.zea-premium-shell main .grid.gap-8 {
+  gap: 1.25rem !important;
+}
+
+.zea-premium-shell main .grid.gap-6 {
+  gap: 1rem !important;
+}
+
+.zea-premium-shell main .grid.gap-5 {
+  gap: 0.875rem !important;
+}
+
+.zea-premium-shell main .grid.gap-4 {
+  gap: 0.75rem !important;
+}
+
+.zea-premium-shell main .grid.gap-3 {
+  gap: 0.625rem !important;
+}
+
+.zea-premium-shell main .space-y-8 > :not(:last-child) {
+  margin-block-start: 0 !important;
+  margin-block-end: 1.25rem !important;
+}
+
+.zea-premium-shell main .space-y-6 > :not(:last-child) {
+  margin-block-start: 0 !important;
+  margin-block-end: 1rem !important;
+}
+
+.zea-premium-shell main .space-y-5 > :not(:last-child) {
+  margin-block-start: 0 !important;
+  margin-block-end: 0.875rem !important;
+}
+
+.zea-premium-shell main .space-y-4 > :not(:last-child) {
+  margin-block-start: 0 !important;
+  margin-block-end: 0.75rem !important;
+}
+
+/* Low-opacity abstract circle field for non-KPI content surfaces. */
+:root {
+  --zea-surface-circles-sm:
+    radial-gradient(circle 3.5rem at 88% 0%, rgba(190, 193, 196, 0.065) 0 99%, transparent 100%),
+    radial-gradient(circle 2rem at 100% 82%, rgba(190, 193, 196, 0.05) 0 99%, transparent 100%);
+  --zea-surface-circles-md:
+    radial-gradient(circle 5.5rem at 80% -1rem, rgba(190, 193, 196, 0.065) 0 99%, transparent 100%),
+    radial-gradient(circle 3.5rem at 101% 58%, rgba(190, 193, 196, 0.05) 0 99%, transparent 100%),
+    radial-gradient(circle 2.25rem at 84% 90%, rgba(190, 193, 196, 0.06) 0 99%, transparent 100%);
+  --zea-surface-circles-lg:
+    radial-gradient(circle 8rem at 76% -1.5rem, rgba(190, 193, 196, 0.065) 0 99%, transparent 100%),
+    radial-gradient(circle 5rem at 103% 38%, rgba(190, 193, 196, 0.045) 0 99%, transparent 100%),
+    radial-gradient(circle 3.25rem at 87% 62%, rgba(190, 193, 196, 0.06) 0 99%, transparent 100%),
+    radial-gradient(circle 4.25rem at 78% 94%, rgba(190, 193, 196, 0.045) 0 99%, transparent 100%);
+}
+
+body .zea-surface-pattern:not(.zea-kpi-card) {
+  background-color: var(--zea-card-base, #10110f) !important;
+  background-repeat: no-repeat !important;
+}
+
+body .zea-surface-pattern-sm:not(.zea-kpi-card) {
+  background-image: linear-gradient(145deg, var(--zea-card-light, #191a17), var(--zea-card-dark, #090a08)) !important;
+}
+
+body .zea-surface-pattern-md:not(.zea-kpi-card) {
+  background-image: linear-gradient(145deg, var(--zea-card-light, #191a17), var(--zea-card-dark, #090a08)) !important;
+}
+
+body .zea-surface-pattern-lg:not(.zea-kpi-card) {
+  background-image: linear-gradient(145deg, var(--zea-card-light, #191a17), var(--zea-card-dark, #090a08)) !important;
+}
+
+body table:not(.zea-kpi-card) {
+  background-color: #0c0e0c !important;
+  background-image: none !important;
+}
+
+body table:not(.zea-kpi-card) thead,
+body table:not(.zea-kpi-card) th {
+  background-color: #1d201e !important;
+  background-image: none !important;
+}
+
+body table:not(.zea-kpi-card) tbody,
+body table:not(.zea-kpi-card) td {
+  background-color: #202320 !important;
+  background-image: none !important;
+}
+
+/* Keep controls, placeholders and loading/empty states visually clean. */
+body button,
+body button *,
+body input,
+body select,
+body textarea,
+body .animate-pulse,
+body .animate-pulse *,
+body .border-dashed,
+body .border-dashed *,
+body [class*="placeholder"],
+body [class*="placeholder"] * {
+  background-image: none !important;
+}
+
+/* Subtle clipped corner arc for compact KPI/statistic cards. */
+.zea-kpi-card {
+  position: relative !important;
+  isolation: isolate;
+  overflow: hidden !important;
+}
+
+.zea-kpi-card::after {
+  position: absolute;
+  z-index: 0;
+  top: var(--zea-kpi-circle-top, -1.5rem);
+  right: var(--zea-kpi-circle-right, -0.5rem);
+  width: var(--zea-kpi-circle-size, 6.5rem);
+  height: var(--zea-kpi-circle-size, 6.5rem);
+  content: "";
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.17);
+  pointer-events: none;
+}
+
+.zea-kpi-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light theme keeps the gold canvas and changes dark UI surfaces to white. */
+html:not(.dark) {
+  --zea-canvas-art:
+    radial-gradient(circle at 76% 8%, rgba(255, 225, 139, 0.18) 0%, transparent 32%),
+    linear-gradient(135deg, #f8f6f1 0%, #fffdf8 52%, #faf5e8 100%);
+}
+
+html:not(.dark) body .zea-premium-shell main {
+  color: #000000;
+}
+
+html:not(.dark) body .zea-premium-shell aside {
+  background: #ffffff !important;
+  color: #171717 !important;
+  border-color: rgba(223, 168, 34, 0.16) !important;
+  box-shadow: 8px 0 28px rgba(76, 59, 20, 0.07) !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside .text-white,
+html:not(.dark) body .zea-premium-shell aside .text-slate-100,
+html:not(.dark) body .zea-premium-shell aside .text-slate-200,
+html:not(.dark) body .zea-premium-shell aside .text-slate-300,
+html:not(.dark) body .zea-premium-shell aside .text-slate-400 {
+  color: #171717 !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"] {
+  color: #111111 !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"]:hover {
+  color: #111111 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+  box-shadow: 0 5px 14px rgba(118, 82, 8, 0.08) !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"]:hover *,
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"]:hover svg {
+  color: inherit !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"].bg-indigo-50,
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"].bg-gradient-to-r {
+  color: #111111 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+  box-shadow: 0 5px 14px rgba(118, 82, 8, 0.08) !important;
+}
+
+html:not(.dark) body .zea-premium-shell header {
+  background: rgba(255, 253, 248, 0.94) !important;
+  border-color: rgba(223, 168, 34, 0.14) !important;
+  box-shadow: 0 6px 20px rgba(76, 59, 20, 0.06) !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside button:not([class*="bg-amber"]):not([class*="bg-yellow"]):hover {
+  background: rgba(223, 168, 34, 0.14) !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"].bg-indigo-50:hover,
+html:not(.dark) body .zea-premium-shell aside [id^="sidebar-link-"].bg-gradient-to-r:hover {
+  color: #111111 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+  box-shadow: 0 5px 14px rgba(118, 82, 8, 0.08) !important;
+}
+
+html:not(.dark) body .zea-premium-shell aside {
+  scrollbar-color: #f1e5c7 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell aside::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell aside::-webkit-scrollbar-thumb:hover {
+  background: #f1e5c7 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .bg-white,
+html:not(.dark) body [role="dialog"],
+html:not(.dark) body form.bg-white {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(223, 168, 34, 0.16) !important;
+  box-shadow: 0 10px 28px rgba(76, 59, 20, 0.08) !important;
+}
+
+html:not(.dark) body .zea-surface-pattern:not(.zea-kpi-card) {
+  --zea-card-base: #ffffff !important;
+  --zea-card-light: #ffffff !important;
+  --zea-card-dark: #fffdf8 !important;
+  background: linear-gradient(145deg, #ffffff 0%, #fffdf8 100%) !important;
+  border-color: rgba(223, 168, 34, 0.16) !important;
+  box-shadow: 0 10px 28px rgba(76, 59, 20, 0.08) !important;
+}
+
+html:not(.dark) body .zea-kpi-card {
+  background: linear-gradient(145deg, #fff4ca 0%, #ffe8a3 100%) !important;
+  color: #000000 !important;
+  border-color: rgba(223, 168, 34, 0.2) !important;
+  box-shadow: 0 10px 24px rgba(76, 59, 20, 0.09) !important;
+}
+
+html:not(.dark) body .zea-kpi-card::after {
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html:not(.dark) body .zea-overview-kpi-grid > .zea-kpi-card:nth-child(1) {
+  background: linear-gradient(145deg, #fff5c8 0%, #ffe59c 100%) !important;
+  border-color: rgba(218, 164, 28, 0.2) !important;
+}
+
+html:not(.dark) body .zea-overview-kpi-grid > .zea-kpi-card:nth-child(2) {
+  background: linear-gradient(145deg, #ffe5d4 0%, #ffcbae 100%) !important;
+  border-color: rgba(225, 126, 77, 0.18) !important;
+}
+
+html:not(.dark) body .zea-overview-kpi-grid > .zea-kpi-card:nth-child(3) {
+  background: linear-gradient(145deg, #dcf6fb 0%, #bcebf4 100%) !important;
+  border-color: rgba(51, 169, 196, 0.17) !important;
+}
+
+html:not(.dark) body .zea-overview-kpi-grid > .zea-kpi-card:nth-child(4) {
+  background: linear-gradient(145deg, #f0e7fb 0%, #dfcff4 100%) !important;
+  border-color: rgba(143, 96, 194, 0.16) !important;
+}
+
+html:not(.dark) body .zea-overview-kpi-grid > .zea-kpi-card::after {
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+html:not(.dark) body .bg-slate-50,
+html:not(.dark) body .bg-slate-100,
+html:not(.dark) body .bg-gray-50,
+html:not(.dark) body .bg-gray-100 {
+  background: #faf8f3 !important;
+}
+
+html:not(.dark) body .text-white,
+html:not(.dark) body .text-slate-100,
+html:not(.dark) body .text-slate-200,
+html:not(.dark) body .text-slate-300,
+html:not(.dark) body .text-slate-700,
+html:not(.dark) body .text-slate-800,
+html:not(.dark) body .text-slate-900,
+html:not(.dark) body .text-gray-700,
+html:not(.dark) body .text-gray-800,
+html:not(.dark) body .text-gray-900 {
+  color: #000000 !important;
+}
+
+html:not(.dark) body .text-slate-400,
+html:not(.dark) body .text-slate-500,
+html:not(.dark) body .text-slate-600,
+html:not(.dark) body .text-gray-400,
+html:not(.dark) body .text-gray-500,
+html:not(.dark) body .text-gray-600 {
+  color: #000000 !important;
+}
+
+html:not(.dark) body input,
+html:not(.dark) body select,
+html:not(.dark) body textarea {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(15, 23, 42, 0.18) !important;
+}
+
+html:not(.dark) body input::placeholder,
+html:not(.dark) body textarea::placeholder {
+  color: #000000 !important;
+  opacity: 0.62;
+}
+
+html:not(.dark) body table {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+}
+
+html:not(.dark) body table thead,
+html:not(.dark) body table th {
+  background: #fff5d8 !important;
+  color: #000000 !important;
+  border-color: rgba(15, 23, 42, 0.14) !important;
+}
+
+html:not(.dark) body table tbody,
+html:not(.dark) body table td {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+html:not(.dark) body table tbody tr:hover td {
+  background: #fffcf4 !important;
+}
+
+html:not(.dark) body .zea-company-form-section-title {
+  background: #fff5d8 !important;
+  border: 1px solid rgba(223, 168, 34, 0.16);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+html:not(.dark) body .zea-company-create-modal .zea-company-create-header,
+html:not(.dark) body .zea-company-create-modal form input,
+html:not(.dark) body .zea-company-create-modal form select,
+html:not(.dark) body .zea-company-create-modal form textarea {
+  background: #fff5d8 !important;
+  background-color: #fff5d8 !important;
+}
+
+html:not(.dark) body .zea-company-create-modal .zea-company-create-header,
+html:not(.dark) body .zea-company-create-modal .zea-company-form-section-title {
+  background: #f1dda5 !important;
+  background-color: #f1dda5 !important;
+}
+
+html:not(.dark) body .zea-global-call-traffic-chart .recharts-cartesian-axis-line,
+html:not(.dark) body .zea-global-call-traffic-chart .recharts-cartesian-axis-tick-line {
+  stroke: #000000 !important;
+}
+
+html:not(.dark) body .zea-global-call-traffic-chart .recharts-cartesian-axis-tick-value {
+  fill: #000000 !important;
+}
+
+body .zea-voice-output-panel {
+  position: relative !important;
+  z-index: 100 !important;
+  overflow: visible !important;
+}
+
+body .zea-voice-output-chart,
+body .zea-voice-output-chart .recharts-responsive-container,
+body .zea-voice-output-chart .recharts-wrapper {
+  overflow: visible !important;
+}
+
+body .zea-voice-output-chart .recharts-tooltip-wrapper {
+  z-index: 9999 !important;
+  pointer-events: none !important;
+}
+
+html.dark body .zea-premium-shell header .zea-theme-toggle {
+  color: #ffd65a !important;
+  background: #0b0c09 !important;
+  border: 1px solid #ffd65a !important;
+  box-shadow: 0 0 0 1px rgba(255, 214, 90, 0.14), 0 6px 16px rgba(46, 31, 0, 0.22) !important;
+}
+
+html.dark body .zea-premium-shell header .zea-theme-toggle:hover {
+  color: #fff0a6 !important;
+  background: #171914 !important;
+  border-color: #fff0a6 !important;
+}
+
+html.dark body .zea-premium-shell header .zea-user-profile {
+  border-left-color: #ffd65a !important;
+}
+
+html.dark body .zea-premium-shell header .zea-user-profile > div:not(.zea-profile-avatar) > span:first-child {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+html.dark body .zea-premium-shell header .zea-user-profile > div:not(.zea-profile-avatar) > span:last-child {
+  color: #ffe28a !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+html.dark body .zea-premium-shell header .zea-profile-avatar {
+  color: #ffd65a !important;
+  background: #0b0c09 !important;
+  border: 2px solid #ffd65a !important;
+  box-shadow: 0 0 0 2px rgba(255, 214, 90, 0.16), 0 6px 16px rgba(46, 31, 0, 0.2) !important;
+}
+
+html.dark body .zea-premium-shell header {
+  color: #f8f5e8 !important;
+  background: linear-gradient(135deg, #11130f 0%, #080a08 100%) !important;
+  border-color: rgba(223, 168, 34, 0.28) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.26) !important;
+}
+
+html.dark body .zea-premium-shell header .text-slate-950,
+html.dark body .zea-premium-shell header .text-slate-900,
+html.dark body .zea-premium-shell header .text-slate-800,
+html.dark body .zea-premium-shell header .text-slate-700 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-premium-shell aside .zea-sidebar-profile-avatar {
+  color: #0a0b08 !important;
+  background: #dfa822 !important;
+  border-color: #f0c55b !important;
+}
+
+html.dark body .zea-company-actions-trigger:hover,
+html.dark body .zea-user-actions-trigger:hover,
+html.dark body .zea-provider-actions-trigger:hover,
+html.dark body .zea-carrier-actions-trigger:hover,
+html.dark body .zea-table-actions-trigger:hover {
+  color: #ffe28a !important;
+  background: rgba(223, 168, 34, 0.16) !important;
+  border-color: rgba(223, 168, 34, 0.48) !important;
+}
+
+html.dark body .zea-company-actions-menu,
+html.dark body .zea-user-actions-menu,
+html.dark body .zea-provider-actions-menu,
+html.dark body .zea-carrier-actions-menu,
+html.dark body .zea-table-actions-menu {
+  background: #10110f !important;
+  border-color: rgba(223, 168, 34, 0.32) !important;
+}
+
+html.dark body .zea-company-actions-menu [role="menuitem"]:hover,
+html.dark body .zea-user-actions-menu [role="menuitem"]:hover,
+html.dark body .zea-provider-actions-menu [role="menuitem"]:hover,
+html.dark body .zea-carrier-actions-menu [role="menuitem"]:hover,
+html.dark body .zea-table-actions-menu [role="menuitem"]:hover {
+  color: #ffe28a !important;
+  background: rgba(223, 168, 34, 0.16) !important;
+}
+
+html.dark body .zea-phone-tabs-header {
+  padding: 0.45rem 0.65rem 0;
+  border: 1px solid rgba(223, 168, 34, 0.2) !important;
+  border-bottom-color: rgba(223, 168, 34, 0.5) !important;
+  border-radius: 0.75rem 0.75rem 0 0;
+  background: #11120f !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+html.dark body .zea-phone-tabs-header .zea-phone-tab {
+  color: #f4e8c5 !important;
+}
+
+html.dark body .zea-phone-tabs-header .zea-phone-tab:hover {
+  color: #fff4cf !important;
+}
+
+html.dark body .zea-phone-tabs-header .zea-phone-tab-active {
+  color: #ffd45f !important;
+  border-bottom-color: #dfa822 !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html.dark body .zea-platform-available-balance {
+  color: #fff3c4 !important;
+}
+
+html.dark body .zea-queue-info-trigger {
+  color: #dfa822 !important;
+}
+
+html.dark body .zea-queue-info-trigger:hover {
+  color: #fff3c4 !important;
+}
+
+html.dark body .zea-queue-info-tooltip {
+  color: #f8f5e8 !important;
+  background: #11120f !important;
+  border-color: rgba(223, 168, 34, 0.38) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48) !important;
+}
+
+html:not(.dark) body .zea-queue-info-tooltip {
+  color: #29261f !important;
+  background: #ffffff !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+}
+
+html:not(.dark) body .zea-queue-info-trigger {
+  color: #171717 !important;
+}
+
+html:not(.dark) body .zea-queue-info-trigger:hover {
+  color: #b78513 !important;
+}
+
+html.dark body .zea-call-monitor-refresh-time {
+  color: #11120f !important;
+}
+
+/* Settings page — reference-matched light and dark surfaces. */
+body .zea-settings-page {
+  width: 100%;
+}
+
+body .zea-settings-shell {
+  width: 100%;
+  overflow: visible !important;
+}
+
+body .zea-settings-header {
+  position: relative;
+  z-index: 100;
+}
+
+body .zea-settings-icon {
+  color: #8b6500 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+}
+
+body .zea-settings-lock {
+  color: #171717 !important;
+  background: rgba(15, 23, 42, 0.05) !important;
+}
+
+body .zea-settings-card textarea,
+body .zea-settings-card input,
+body .zea-settings-card select {
+  min-height: 3.5rem;
+  box-shadow: none !important;
+}
+
+body .zea-settings-card textarea {
+  min-height: 3.5rem;
+}
+
+body .zea-settings-card textarea:focus,
+body .zea-settings-card input:focus,
+body .zea-settings-card select:focus {
+  border-color: #dfa822 !important;
+  box-shadow: 0 0 0 3px rgba(223, 168, 34, 0.12) !important;
+}
+
+body .zea-settings-confirm input[type="checkbox"] {
+  min-height: 1.25rem;
+  accent-color: #dfa822;
+}
+
+html:not(.dark) body .zea-settings-shell {
+  color: #111827 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(223, 168, 34, 0.12) !important;
+  box-shadow: 0 12px 38px rgba(72, 54, 18, 0.07) !important;
+}
+
+html:not(.dark) body .zea-settings-card {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+html:not(.dark) body .zea-settings-card textarea,
+html:not(.dark) body .zea-settings-card input,
+html:not(.dark) body .zea-settings-card select {
+  color: #111827 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(15, 23, 42, 0.16) !important;
+}
+
+html:not(.dark) body .zea-settings-warning,
+html:not(.dark) body .zea-settings-confirm {
+  background: rgba(255, 250, 235, 0.66) !important;
+  border-color: rgba(223, 168, 34, 0.32) !important;
+}
+
+html:not(.dark) body .zea-settings-apply {
+  color: #111111 !important;
+  background: linear-gradient(135deg, #dfa822, #f2bb23) !important;
+  border-color: #dfa822 !important;
+}
+
+html.dark body .zea-settings-shell {
+  color: #f8f5e8 !important;
+  background: linear-gradient(145deg, #101418 0%, #0b0f12 100%) !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28) !important;
+}
+
+html.dark body .zea-settings-shell h2,
+html.dark body .zea-settings-shell h3 {
+  color: #f8f7f2 !important;
+}
+
+html.dark body .zea-settings-shell p,
+html.dark body .zea-settings-shell span {
+  color: #c2c5cb;
+}
+
+html.dark body .zea-settings-card {
+  background: linear-gradient(145deg, #12171b 0%, #101419 100%) !important;
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+html.dark body .zea-settings-icon {
+  color: #f2b916 !important;
+  background: rgba(223, 168, 34, 0.17) !important;
+}
+
+html.dark body .zea-settings-card textarea,
+html.dark body .zea-settings-card input,
+html.dark body .zea-settings-card select {
+  color: #f8f7f2 !important;
+  background: rgba(9, 12, 15, 0.42) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+html.dark body .zea-settings-card option {
+  color: #f8f7f2 !important;
+  background: #111519 !important;
+}
+
+html.dark body .zea-settings-warning,
+html.dark body .zea-settings-confirm {
+  background: linear-gradient(100deg, rgba(223, 168, 34, 0.08), rgba(223, 168, 34, 0.025)) !important;
+  border-color: rgba(223, 168, 34, 0.34) !important;
+}
+
+html.dark body .zea-settings-warning p,
+html.dark body .zea-settings-confirm span {
+  color: #e5e2d8 !important;
+}
+
+html.dark body .zea-settings-reload {
+  color: #e8d8a6 !important;
+  background: #171b1f !important;
+  border-color: rgba(223, 168, 34, 0.26) !important;
+}
+
+html.dark body .zea-settings-apply {
+  color: #0a0b08 !important;
+  background: linear-gradient(135deg, #dfa822, #ffc229) !important;
+  border-color: #efb524 !important;
+}
+
+body .zea-settings-apply,
+body .zea-settings-apply span,
+body .zea-settings-apply svg {
+  color: #0a0b08 !important;
+}
+
+html:not(.dark) body .zea-associated-tenant-org {
+  color: #8a6200 !important;
+}
+
+html.dark body .zea-associated-tenant-org {
+  color: #c99512 !important;
+}
+
+body .zea-provider-card {
+  height: 28.5rem;
+}
+
+body .zea-provider-keys-scroll {
+  max-height: 9rem;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+body .zea-provider-key-row {
+  min-height: 1.45rem;
+}
+
+body .zea-provider-keys-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+body .zea-provider-keys-scroll::-webkit-scrollbar-thumb {
+  border: 0 !important;
+  border-radius: 999px;
+  background: rgba(138, 98, 0, 0.5) !important;
+}
+
+html.dark body .zea-provider-keys-scroll::-webkit-scrollbar-thumb {
+  background: rgba(223, 168, 34, 0.58) !important;
+}
+
+/* Developer dashboard operator cards. */
+body .zea-developer-operator-card {
+  height: 15rem;
+  min-width: 0;
+  padding: 1.5rem !important;
+  padding-bottom: 1.85rem !important;
+  border-radius: 1.35rem !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+  box-shadow: 0 10px 26px rgba(54, 39, 8, 0.07) !important;
+}
+
+body .zea-developer-operator-card .zea-operator-card-header {
+  min-height: 0;
+}
+
+body .zea-developer-operator-card .zea-operator-card-title {
+  overflow-wrap: anywhere;
+  line-height: 1.3rem !important;
+}
+
+body .zea-developer-operator-card .zea-operator-card-brain {
+  margin-top: 0.25rem;
+  line-height: 1.15rem !important;
+}
+
+body .zea-developer-operator-card .zea-operator-card-status {
+  padding: 0.2rem 0.65rem !important;
+}
+
+body .zea-developer-operator-card .zea-operator-card-prompt {
+  min-height: 4.5rem;
+  margin-top: 0.75rem !important;
+  overflow-wrap: anywhere;
+}
+
+body .zea-developer-operator-card .zea-operator-card-stats {
+  padding: 0.75rem 0.35rem !important;
+  border-color: rgba(223, 168, 34, 0.22) !important;
+  background: rgba(223, 168, 34, 0.035) !important;
+}
+
+body .zea-developer-operator-card .zea-operator-stat + .zea-operator-stat {
+  border-left: 1px solid rgba(223, 168, 34, 0.16);
+}
+
+body .zea-developer-operator-card .zea-operator-card-action {
+  min-height: 2.75rem;
+  margin-bottom: 0.5rem;
+  color: #282317 !important;
+  border-color: rgba(223, 168, 34, 0.35) !important;
+  background: rgba(223, 168, 34, 0.045) !important;
+}
+
+body .zea-developer-operator-card .zea-operator-card-action:hover {
+  color: #8a6200 !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html.dark body .zea-developer-operator-card {
+  border-color: rgba(223, 168, 34, 0.3) !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24) !important;
+}
+
+html.dark body .zea-developer-operator-card .zea-operator-card-stats,
+html.dark body .zea-developer-operator-card .zea-operator-card-action {
+  background: rgba(223, 168, 34, 0.075) !important;
+}
+
+html.dark body .zea-developer-operator-card .zea-operator-card-action {
+  color: #f2cf73 !important;
+}
+
+html.dark body .zea-developer-operator-card .zea-operator-card-action:hover {
+  color: #fff3c4 !important;
+  background: rgba(223, 168, 34, 0.16) !important;
+}
+
+html.dark body .zea-developer-operator-console-description {
+  color: #11120f !important;
+}
+
+html.dark body .zea-developer-operator-console-title {
+  color: #11120f !important;
+}
+
+html:not(.dark) body .zea-agent-editor-header {
+  color: #111827 !important;
+  background: rgba(255, 253, 248, 0.96) !important;
+  border-bottom: 1px solid rgba(223, 168, 34, 0.18);
+}
+
+html:not(.dark) body .zea-agent-editor-header > div:first-child > span,
+html:not(.dark) body .zea-agent-editor-header > div:first-child > p {
+  color: #78570f !important;
+}
+
+html.dark body .zea-agent-editor-header {
+  color: #f8f5e8 !important;
+  background: linear-gradient(135deg, #11130f 0%, #080a08 100%) !important;
+  border-bottom: 1px solid rgba(223, 168, 34, 0.28);
+}
+
+html.dark body .zea-agent-editor-header > div:first-child > span,
+html.dark body .zea-agent-editor-header > div:first-child > p {
+  color: #e9d99f !important;
+}
+
+html:not(.dark) body .zea-agent-editor-header .zea-agent-editor-subtitle {
+  color: #6b7280 !important;
+}
+
+html.dark body .zea-agent-editor-header .zea-agent-editor-subtitle {
+  color: #9ca3af !important;
+}
+
+/* Agent Editor section headers: premium near-black surfaces in Dark Mode. */
+html.dark body .zea-agent-editor .bg-amber-50\/40,
+html.dark body .zea-agent-editor .bg-amber-50\/30,
+html.dark body .zea-agent-editor .bg-amber-50\/50,
+html.dark body .zea-agent-editor .bg-slate-50\/55,
+html.dark body .zea-agent-editor .bg-violet-50\/40,
+html.dark body .zea-agent-editor .border-b.border-slate-100.p-5 {
+  background: linear-gradient(135deg, #171914 0%, #0e100d 100%) !important;
+  border-bottom-color: rgba(223, 168, 34, 0.22) !important;
+}
+
+html.dark body .zea-agent-editor .bg-amber-50\/40 h3,
+html.dark body .zea-agent-editor .bg-amber-50\/30 h3,
+html.dark body .zea-agent-editor .bg-amber-50\/50 h3,
+html.dark body .zea-agent-editor .bg-slate-50\/55 h3,
+html.dark body .zea-agent-editor .bg-violet-50\/40 h3,
+html.dark body .zea-agent-editor .border-b.border-slate-100.p-5 h3 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-agent-editor .bg-amber-50\/40 p,
+html.dark body .zea-agent-editor .bg-amber-50\/30 p,
+html.dark body .zea-agent-editor .bg-amber-50\/50 p,
+html.dark body .zea-agent-editor .bg-slate-50\/55 p,
+html.dark body .zea-agent-editor .bg-violet-50\/40 p,
+html.dark body .zea-agent-editor .border-b.border-slate-100.p-5 p {
+  color: #b7b9b0 !important;
+}
+
+html.dark body .zea-agent-editor .zea-stt-parameters,
+html.dark body .zea-agent-editor .zea-model-parameters,
+html.dark body .zea-agent-editor .zea-knowledge-selector-card,
+html.dark body .zea-agent-editor .zea-pronunciation-test-card {
+  color: #f4f1e6 !important;
+  background: linear-gradient(145deg, #151713 0%, #0d0f0c 100%) !important;
+  border-color: rgba(223, 168, 34, 0.25) !important;
+}
+
+html.dark body .zea-agent-editor .zea-model-parameter-item,
+html.dark body .zea-agent-editor .zea-pronunciation-test-card input,
+html.dark body .zea-agent-editor .zea-knowledge-selector-card select {
+  color: #eee9d8 !important;
+  background: #090b09 !important;
+  border-color: rgba(223, 168, 34, 0.2) !important;
+}
+
+html.dark body .zea-agent-editor .zea-model-parameter-item span:first-child,
+html.dark body .zea-agent-editor .zea-knowledge-selector-card > span {
+  color: #c9c4b4 !important;
+}
+
+html.dark body .zea-agent-editor .zea-model-parameter-item span:last-child {
+  color: #f0d689 !important;
+}
+
+html.dark body .zea-agent-editor .zea-super-admin-model-badge,
+html.dark body .zea-agent-editor .zea-stt-model-badge {
+  color: #f0c75e !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+  border-color: rgba(223, 168, 34, 0.32) !important;
+}
+
+html.dark body .zea-agent-editor .zea-conversation-memory-header {
+  background: linear-gradient(135deg, #171914 0%, #0e100d 100%) !important;
+  border-bottom-color: rgba(223, 168, 34, 0.22) !important;
+}
+
+html.dark body .zea-agent-editor .zea-conversation-memory-header h3 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-agent-editor .zea-conversation-memory-header p {
+  color: #b7b9b0 !important;
+}
+
+html.dark body .zea-agent-editor .zea-core-directive-editor {
+  background: #080a08 !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+}
+
+html.dark body .zea-agent-editor .zea-core-directive-header {
+  background: #121510 !important;
+  border-bottom-color: rgba(223, 168, 34, 0.22) !important;
+}
+
+html.dark body .zea-agent-editor .zea-core-directive-header span {
+  color: #d8c98f !important;
+}
+
+html.dark body .zea-agent-editor .zea-pronunciation-test-card input::placeholder {
+  color: #777b70 !important;
+}
+
+html.dark body .zea-agent-editor .zea-test-pronunciation-button {
+  color: #11120f !important;
+  background: #dfa822 !important;
+}
+
+html.dark body .zea-agent-editor .zea-test-pronunciation-button:hover {
+  background: #efbd3d !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item {
+  color: #eee9d8 !important;
+  background: linear-gradient(145deg, #141713 0%, #0a0c0a 100%) !important;
+  border-color: rgba(223, 168, 34, 0.2) !important;
+  box-shadow: none !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item:hover {
+  background: #181b16 !important;
+  border-color: rgba(223, 168, 34, 0.48) !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item-selected {
+  background: linear-gradient(145deg, #201b0d 0%, #11120d 100%) !important;
+  border-color: #dfa822 !important;
+  box-shadow: 0 0 0 2px rgba(223, 168, 34, 0.16) !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item .text-slate-800 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item .text-slate-500 {
+  color: #b7b9b0 !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-base-list-item .border-slate-100 {
+  border-color: rgba(223, 168, 34, 0.14) !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-card {
+  background: linear-gradient(145deg, #151713 0%, #0b0d0b 100%) !important;
+  border-color: rgba(223, 168, 34, 0.22) !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-card span {
+  color: #c9b66f !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-card strong {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-published {
+  border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-published span {
+  color: #6ee7b7 !important;
+}
+
+html.dark body .zea-agent-editor .zea-knowledge-summary-assigned {
+  border-color: rgba(223, 168, 34, 0.3) !important;
+}
+
+.zea-reports-filter-drawer {
+  animation: zea-reports-drawer-in 180ms ease-out;
+}
+
+@keyframes zea-reports-drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+html.dark body .zea-reports-filter-drawer {
+  color: #f8f5e8 !important;
+  background: linear-gradient(145deg, #151713 0%, #090b09 100%) !important;
+  border-left-color: rgba(223, 168, 34, 0.28) !important;
+}
+
+html.dark body .zea-reports-filter-drawer > div:first-child,
+html.dark body .zea-reports-filter-drawer > div:last-child {
+  background: #0e100d !important;
+  border-color: rgba(223, 168, 34, 0.2) !important;
+}
+
+html.dark body .zea-reports-filter-drawer h3 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-reports-filter-drawer label > span {
+  color: #c9c4b4 !important;
+}
+
+html.dark body .zea-reports-filter-drawer select {
+  color: #eee9d8 !important;
+  background: #090b09 !important;
+  border-color: rgba(223, 168, 34, 0.22) !important;
+}
+
+html.dark body .zea-reports-filter-drawer option {
+  color: #eee9d8 !important;
+  background: #11130f !important;
+}
+
+html:not(.dark) body .zea-reports-export-csv {
+  color: #090a08 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-reports-export-csv:hover {
+  background: #efbd3d !important;
+}
+
+html:not(.dark) body .zea-reports-export-csv svg {
+  color: #090a08 !important;
+}
+
+html:not(.dark) body .zea-vqa-refresh-button {
+  color: #090a08 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-vqa-refresh-button:hover {
+  background: #efbd3d !important;
+}
+
+html:not(.dark) body .zea-vqa-refresh-button svg {
+  color: #090a08 !important;
+}
+
+html:not(.dark) body .zea-ai-insights-view > div:first-child button {
+  color: #090a08 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-ai-insights-view > div:first-child button:hover {
+  background: #efbd3d !important;
+}
+
+html:not(.dark) body .zea-ai-insights-view > div:first-child button svg {
+  color: #090a08 !important;
+}
+
+/* AI Insights: keep every Dark Mode surface within the premium black-and-gold palette. */
+html.dark body .zea-ai-insights-view .bg-white {
+  background: linear-gradient(145deg, #151713 0%, #0b0d0b 100%) !important;
+}
+
+html.dark body .zea-ai-insights-view .bg-slate-50,
+html.dark body .zea-ai-insights-view .bg-slate-100 {
+  background: #181b16 !important;
+}
+
+html.dark body .zea-ai-insights-view .border-slate-200,
+html.dark body .zea-ai-insights-view .border-slate-100,
+html.dark body .zea-ai-insights-view .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(223, 168, 34, 0.18) !important;
+}
+
+html.dark body .zea-ai-insights-view .text-slate-800,
+html.dark body .zea-ai-insights-view .text-slate-700 {
+  color: #f8f5e8 !important;
+}
+
+html.dark body .zea-ai-insights-view .text-slate-600 {
+  color: #d2cfc3 !important;
+}
+
+html.dark body .zea-ai-insights-view .text-slate-500,
+html.dark body .zea-ai-insights-view .text-slate-400 {
+  color: #aaaDA4 !important;
+}
+
+html.dark body .zea-ai-insights-view select {
+  color: #f3efe1 !important;
+  background: #090b09 !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+}
+
+html.dark body .zea-ai-insights-view select option {
+  color: #f3efe1 !important;
+  background: #11130f !important;
+}
+
+html.dark body .zea-ai-insights-view .hover\:bg-slate-50:hover {
+  background: rgba(223, 168, 34, 0.075) !important;
+}
+
+html.dark body .zea-ai-insights-view .bg-blue-50 {
+  background: rgba(59, 130, 246, 0.12) !important;
+}
+
+html.dark body .zea-ai-insights-view .bg-amber-50 {
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html.dark body .zea-ai-insights-view .bg-emerald-50 {
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+
+html.dark body .zea-ai-insights-view .bg-red-50 {
+  background: rgba(239, 68, 68, 0.12) !important;
+}
+
+html.dark body .zea-ai-insights-view > .flex.items-start.border-blue-200.bg-blue-50 {
+  color: #d9e4dc !important;
+  background: linear-gradient(145deg, #131813 0%, #0b0f0c 100%) !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+}
+
+html.dark body .zea-ai-insights-view > .flex.items-start.border-blue-200.bg-blue-50 svg {
+  color: #dfa822 !important;
+}
+
+/* Calls Requiring Review: contain long agent names in the first grid column. */
+.zea-ai-insights-view .lg\:grid-cols-\[180px_1fr_190px\] > div:first-child {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.zea-ai-insights-view .lg\:grid-cols-\[180px_1fr_190px\] > div:first-child > p {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+html.dark body .zea-phone-isolation-notice {
+  color: #d9e4dc !important;
+  background: linear-gradient(145deg, #121813 0%, #0a0f0b 100%) !important;
+  border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+html.dark body .zea-phone-isolation-notice svg {
+  color: #6ee7b7 !important;
+}
+
+html.dark body .zea-settings-task-notice {
+  color: #f4e7bd !important;
+  background: linear-gradient(145deg, #18150d 0%, #0f0d08 100%) !important;
+  border-color: rgba(223, 168, 34, 0.38) !important;
+}
+
+html.dark body .zea-settings-task-notice svg {
+  color: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-settings-task-notice {
+  color: #5b4108 !important;
+}
+
+html:not(.dark) body .zea-n8n-task-code {
+  color: #ffffff !important;
+}
+
+html.dark body .zea-api-key-tenant-notice {
+  color: #f1f5f9 !important;
+  background: #000000 !important;
+  border-color: rgba(223, 168, 34, 0.4) !important;
+}
+
+html.dark body .zea-api-key-tenant-notice svg {
+  color: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-phone-numbers-refresh-button {
+  color: #000000 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-phone-numbers-refresh-button svg {
+  color: #000000 !important;
+}
+
+html:not(.dark) body .zea-integration-card-button {
+  color: #000000 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-integration-card-button svg {
+  color: #000000 !important;
+}
+
+html:not(.dark) body .zea-integration-card-button:hover {
+  color: #000000 !important;
+  background: #e8b83c !important;
+}
+
+html:not(.dark) body .zea-integration-card-button:focus-visible {
+  color: #000000 !important;
+  background: #dfa822 !important;
+  box-shadow: 0 0 0 3px rgba(223, 168, 34, 0.3) !important;
+}
+
+html:not(.dark) body .zea-integration-card-button:active {
+  color: #000000 !important;
+  background: #c89218 !important;
+}
+
+html:not(.dark) body .zea-integration-card-button:disabled {
+  color: rgba(0, 0, 0, 0.58) !important;
+  background: rgba(223, 168, 34, 0.5) !important;
+  cursor: not-allowed;
+}
+
+html:not(.dark) body .zea-create-api-key-button {
+  color: #000000 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-create-api-key-button svg {
+  color: #000000 !important;
+}
+
+html:not(.dark) body .zea-create-api-key-button:hover {
+  color: #000000 !important;
+  background: #e8b83c !important;
+}
+
+html:not(.dark) body .zea-create-api-key-button:focus-visible {
+  color: #000000 !important;
+  background: #dfa822 !important;
+  box-shadow: 0 0 0 3px rgba(223, 168, 34, 0.3) !important;
+}
+
+html:not(.dark) body .zea-create-api-key-button:active {
+  color: #000000 !important;
+  background: #c89218 !important;
+}
+
+html:not(.dark) body .zea-create-api-key-button:disabled {
+  color: rgba(0, 0, 0, 0.58) !important;
+  background: rgba(223, 168, 34, 0.5) !important;
+  cursor: not-allowed;
+}
+
+/* Light theme: retain the premium gold accent with stronger text contrast. */
+html:not(.dark) body .zea-premium-shell .text-indigo-400,
+html:not(.dark) body .zea-premium-shell .text-indigo-500,
+html:not(.dark) body .zea-premium-shell .text-indigo-600,
+html:not(.dark) body .zea-premium-shell .text-purple-400,
+html:not(.dark) body .zea-premium-shell .text-purple-500,
+html:not(.dark) body .zea-premium-shell .text-purple-600,
+html:not(.dark) body .zea-premium-shell .text-violet-400,
+html:not(.dark) body .zea-premium-shell .text-violet-500,
+html:not(.dark) body .zea-premium-shell .text-violet-600,
+html:not(.dark) body .zea-premium-shell .text-amber-100,
+html:not(.dark) body .zea-premium-shell .text-amber-200,
+html:not(.dark) body .zea-premium-shell .text-amber-300,
+html:not(.dark) body .zea-premium-shell .text-amber-400,
+html:not(.dark) body .zea-premium-shell .text-amber-500,
+html:not(.dark) body .zea-premium-shell .text-amber-600,
+html:not(.dark) body .zea-premium-shell .text-yellow-100,
+html:not(.dark) body .zea-premium-shell .text-yellow-200,
+html:not(.dark) body .zea-premium-shell .text-yellow-300,
+html:not(.dark) body .zea-premium-shell .text-yellow-400,
+html:not(.dark) body .zea-premium-shell .text-yellow-500,
+html:not(.dark) body .zea-premium-shell .text-yellow-600,
+html:not(.dark) body .zea-premium-shell [class*="text-[#dfa822]"] {
+  color: #946300 !important;
+}
+
+html:not(.dark) body .zea-premium-shell .bg-amber-50,
+html:not(.dark) body .zea-premium-shell .bg-yellow-50 {
+  color: #825700 !important;
+}
+
+html.dark body .zea-user-operator-console-title,
+html.dark body .zea-user-operator-console-description {
+  color: #0a0b08 !important;
+}
+
+/* Premium dropdown system: native selects and shared portaled menus. */
+body .zea-premium-shell select {
+  min-height: 2.625rem;
+  border-radius: 0.8rem !important;
+  border-width: 1px !important;
+  padding-block: 0.625rem;
+  padding-inline-start: 0.875rem;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.25;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+body .zea-premium-shell select:not(.appearance-none) {
+  appearance: none;
+  padding-inline-end: 2.5rem !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.85rem center !important;
+  background-size: 0.9rem 0.9rem !important;
+}
+
+html:not(.dark) body .zea-premium-shell select:not(.appearance-none) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23946300' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+html.dark body .zea-premium-shell select:not(.appearance-none) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dfa822' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+html:not(.dark) body .zea-premium-shell select {
+  color: #171717 !important;
+  background-color: #fffdf8 !important;
+  border-color: rgba(148, 104, 0, 0.24) !important;
+}
+
+html:not(.dark) body .zea-premium-shell select:hover {
+  border-color: rgba(148, 99, 0, 0.5) !important;
+  box-shadow: 0 6px 18px rgba(118, 82, 8, 0.09);
+}
+
+html:not(.dark) body .zea-premium-shell select:focus,
+html:not(.dark) body .zea-premium-shell select:focus-visible {
+  border-color: #dfa822 !important;
+  box-shadow: 0 0 0 3px rgba(223, 168, 34, 0.18) !important;
+}
+
+html.dark body .zea-premium-shell select {
+  color: #f8f5e8 !important;
+  background-color: #10110f !important;
+  border-color: rgba(223, 168, 34, 0.3) !important;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.24);
+}
+
+html.dark body .zea-premium-shell select:hover {
+  border-color: rgba(223, 168, 34, 0.58) !important;
+  background-color: #15150f !important;
+}
+
+html.dark body .zea-premium-shell select:focus,
+html.dark body .zea-premium-shell select:focus-visible {
+  border-color: #dfa822 !important;
+  box-shadow: 0 0 0 3px rgba(223, 168, 34, 0.2) !important;
+}
+
+body .zea-premium-shell select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none !important;
+}
+
+html:not(.dark) body .zea-premium-shell select option {
+  color: #171717;
+  background: #fffdf8;
+}
+
+html.dark body .zea-premium-shell select option {
+  color: #f8f5e8;
+  background: #10110f;
+}
+
+body .zea-premium-shell select option:checked {
+  color: #0a0b08;
+  background: #dfa822;
+}
+
+body .zea-company-actions-trigger,
+body .zea-user-actions-trigger,
+body .zea-provider-actions-trigger,
+body .zea-carrier-actions-trigger,
+body .zea-table-actions-trigger {
+  border-radius: 0.7rem !important;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+body .zea-company-actions-trigger:active,
+body .zea-user-actions-trigger:active,
+body .zea-provider-actions-trigger:active,
+body .zea-carrier-actions-trigger:active,
+body .zea-table-actions-trigger:active {
+  transform: scale(0.96);
+}
+
+body .zea-company-actions-menu,
+body .zea-user-actions-menu,
+body .zea-provider-actions-menu,
+body .zea-carrier-actions-menu,
+body .zea-table-actions-menu,
+body [role="listbox"] {
+  border-radius: 0.85rem !important;
+  padding: 0.375rem !important;
+  box-shadow: 0 18px 46px rgba(15, 23, 42, 0.18) !important;
+  animation: zea-dropdown-enter 140ms ease-out both;
+  transform-origin: top right;
+}
+
+body .zea-company-actions-menu [role="menuitem"],
+body .zea-user-actions-menu [role="menuitem"],
+body .zea-provider-actions-menu [role="menuitem"],
+body .zea-carrier-actions-menu [role="menuitem"],
+body .zea-table-actions-menu [role="menuitem"],
+body [role="listbox"] [role="option"] {
+  min-height: 2.25rem;
+  border-radius: 0.6rem !important;
+  padding: 0.55rem 0.75rem !important;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  transition: color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+
+html:not(.dark) body .zea-company-actions-menu,
+html:not(.dark) body .zea-user-actions-menu,
+html:not(.dark) body .zea-provider-actions-menu,
+html:not(.dark) body .zea-carrier-actions-menu,
+html:not(.dark) body .zea-table-actions-menu,
+html:not(.dark) body [role="listbox"] {
+  color: #252117 !important;
+  background: #fffdf8 !important;
+  border-color: rgba(148, 99, 0, 0.22) !important;
+}
+
+html:not(.dark) body .zea-company-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html:not(.dark) body .zea-user-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html:not(.dark) body .zea-provider-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html:not(.dark) body .zea-carrier-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html:not(.dark) body .zea-table-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html:not(.dark) body [role="listbox"] [role="option"]:hover,
+html:not(.dark) body [role="listbox"] [role="option"][aria-selected="true"] {
+  color: #704b00 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+}
+
+html.dark body .zea-company-actions-menu,
+html.dark body .zea-user-actions-menu,
+html.dark body .zea-provider-actions-menu,
+html.dark body .zea-carrier-actions-menu,
+html.dark body .zea-table-actions-menu,
+html.dark body [role="listbox"] {
+  color: #f8f5e8 !important;
+  background: #10110f !important;
+  border-color: rgba(223, 168, 34, 0.34) !important;
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.52) !important;
+}
+
+html.dark body .zea-company-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html.dark body .zea-user-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html.dark body .zea-provider-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html.dark body .zea-carrier-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html.dark body .zea-table-actions-menu [role="menuitem"]:not(.text-red-600):hover,
+html.dark body [role="listbox"] [role="option"]:hover,
+html.dark body [role="listbox"] [role="option"][aria-selected="true"] {
+  color: #ffe28a !important;
+  background: rgba(223, 168, 34, 0.16) !important;
+}
+
+@keyframes zea-dropdown-enter {
+  from { opacity: 0; transform: translateY(-4px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .zea-company-actions-menu,
+  body .zea-user-actions-menu,
+  body .zea-provider-actions-menu,
+  body .zea-carrier-actions-menu,
+  body .zea-table-actions-menu,
+  body [role="listbox"] {
+    animation: none;
+  }
+}
+
+/* Modern customizable select popup; existing native selects remain the fallback. */
+@supports (appearance: base-select) {
+  body .zea-premium-shell select,
+  body .zea-premium-shell select::picker(select) {
+    appearance: base-select;
+  }
+
+  body .zea-premium-shell select::picker-icon {
+    display: none;
+  }
+
+  body .zea-premium-shell select::picker(select) {
+    max-height: min(22rem, 60vh);
+    margin-top: 0.4rem;
+    overflow-y: auto;
+    border: 1px solid;
+    border-radius: 0.9rem;
+    padding: 0.4rem;
+    font-family: inherit;
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.2);
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+    transition: opacity 140ms ease, transform 140ms ease, display 140ms allow-discrete;
+  }
+
+  body .zea-premium-shell select:open::picker(select) {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  @starting-style {
+    body .zea-premium-shell select:open::picker(select) {
+      opacity: 0;
+      transform: translateY(-5px) scale(0.985);
+    }
+  }
+
+  body .zea-premium-shell select option {
+    min-height: 2.35rem;
+    margin: 0.1rem 0;
+    border: 0;
+    border-radius: 0.65rem;
+    padding: 0.6rem 0.75rem;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    transition: color 120ms ease, background-color 120ms ease;
+  }
+
+  body .zea-premium-shell select option::checkmark {
+    order: 1;
+    margin-left: auto;
+    font-weight: 800;
+  }
+
+  html:not(.dark) body .zea-premium-shell select::picker(select) {
+    color: #211d14;
+    background: #fffdf8;
+    border-color: rgba(148, 99, 0, 0.24);
+    box-shadow: 0 20px 48px rgba(76, 59, 20, 0.17);
+  }
+
+  html:not(.dark) body .zea-premium-shell select option {
+    color: #211d14;
+    background: transparent;
+  }
+
+  html:not(.dark) body .zea-premium-shell select option:hover,
+  html:not(.dark) body .zea-premium-shell select option:focus-visible {
+    color: #704b00;
+    background: rgba(223, 168, 34, 0.13);
+  }
+
+  html:not(.dark) body .zea-premium-shell select option:checked {
+    color: #17120a;
+    background: rgba(223, 168, 34, 0.24);
+  }
+
+  html:not(.dark) body .zea-premium-shell select option::checkmark {
+    color: #946300;
+  }
+
+  html.dark body .zea-premium-shell select::picker(select) {
+    color: #f8f5e8;
+    background: #10110f;
+    border-color: rgba(223, 168, 34, 0.36);
+    box-shadow: 0 22px 54px rgba(0, 0, 0, 0.58);
+  }
+
+  html.dark body .zea-premium-shell select option {
+    color: #f8f5e8;
+    background: transparent;
+  }
+
+  html.dark body .zea-premium-shell select option:hover,
+  html.dark body .zea-premium-shell select option:focus-visible {
+    color: #ffe8a3;
+    background: rgba(223, 168, 34, 0.14);
+  }
+
+  html.dark body .zea-premium-shell select option:checked {
+    color: #fff0bc;
+    background: rgba(223, 168, 34, 0.24);
+  }
+
+  html.dark body .zea-premium-shell select option::checkmark {
+    color: #dfa822;
+  }
+
+  body .zea-premium-shell select option:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+
+.zea-vqa-audit-title-info {
+  position: relative;
+  z-index: 2;
+  width: 0;
+  height: 0;
+  left: 171px;
+  top: 58px;
+}
+
+.zea-vqa-audit-title-info + div > .overflow-x-auto {
+  width: calc(100% - 1.5rem);
+  margin-top: 0.75rem;
+  margin-right: 0.75rem;
+  margin-bottom: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+.zea-vqa-audit-row {
+  cursor: pointer;
+}
+
+.zea-vqa-audit-row:focus-visible {
+  outline: 2px solid #dfa822 !important;
+  outline-offset: -2px;
+}
+
+/* Call Logs Analytics detail drawer: surface the existing recording card first. */
+.fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .flex-1.space-y-5.overflow-y-auto.p-6 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .flex-1.space-y-5.overflow-y-auto.p-6 > * {
+  margin-top: 0 !important;
+}
+
+.fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .flex-1.space-y-5.overflow-y-auto.p-6 > :last-child {
+  order: -1;
+}
+
+html:not(.dark) body .fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .border-t.border-slate-200.bg-white.p-5.text-right > button {
+  color: #090a08 !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .border-t.border-slate-200.bg-white.p-5.text-right > button:hover {
+  background: #efbd3d !important;
+}
+
+html:not(.dark) body .fixed.inset-0.z-50.flex.justify-end > .flex.h-full.w-full.max-w-xl.flex-col > .border-t.border-slate-200.bg-white.p-5.text-right > button svg {
+  color: #090a08 !important;
+}
+
+@media (max-width: 640px) {
+  .zea-vqa-audit-title-info + div > .overflow-x-auto {
+    width: calc(100% - 1rem);
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+  }
+}
+
+.zea-call-logs-table-wrap {
+  width: calc(100% - 1.5rem);
+  margin-top: 0.75rem;
+  margin-right: 0.75rem;
+  margin-bottom: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .zea-call-logs-table-wrap {
+    width: calc(100% - 1rem);
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+  }
+}
+
+html:not(.dark) body .zea-field-info-tooltip {
+  color: #29261f !important;
+  background: #ffffff !important;
+  border-color: rgba(223, 168, 34, 0.28) !important;
+  box-shadow: 0 16px 36px rgba(66, 48, 8, 0.16) !important;
+  z-index: 2147483647 !important;
+}
+
+html.dark body .zea-field-info-tooltip {
+  color: #f8f5e8 !important;
+  background: #11120f !important;
+  border-color: rgba(223, 168, 34, 0.4) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48) !important;
+  z-index: 2147483647 !important;
+}
+
+html.dark body .zea-field-info-trigger {
+  color: #dfa822 !important;
+  background: rgba(223, 168, 34, 0.14) !important;
+}
+
+html:not(.dark) body .zea-interruption-toggle.zea-toggle-inactive {
+  background: #94a3b8 !important;
+  border-color: #64748b !important;
+}
+
+html.dark body .zea-interruption-toggle.zea-toggle-inactive {
+  background: #292e27 !important;
+  border-color: #51594d !important;
+}
+
+html:not(.dark) body .zea-stt-model-badge {
+  color: #8a5d00 !important;
+}
+
+html:not(.dark) body .zea-interruption-trigger-chip {
+  color: #7a4f00 !important;
+}
+
+html.dark body .zea-trigger-add-button {
+  color: #11120f !important;
+  background: #c18a12 !important;
+  border-color: #a8750d !important;
+}
+
+html.dark body .zea-trigger-add-button:hover {
+  background: #ad790d !important;
+}
+
+html.dark body .zea-trigger-chip-remove {
+  color: #f2cf73 !important;
+}
+
+html.dark body .zea-trigger-chip-remove:hover {
+  color: #fff3c4 !important;
+  background: rgba(223, 168, 34, 0.2) !important;
+}
+
+body .zea-brain-tab svg,
+body .zea-brain-tab .zea-brain-icon-box {
+  display: none !important;
+}
+
+body .zea-brain-tab .zea-field-info-trigger svg {
+  display: block !important;
+}
+
+html:not(.dark) body .zea-callback-badge-outbound {
+  color: #1e40af !important;
+}
+
+html:not(.dark) body .zea-callback-badge-detection {
+  color: #065f46 !important;
+}
+
+html:not(.dark) body .zea-callback-badge-retry {
+  color: #1e3a8a !important;
+  background: #eff6ff !important;
+}
+
+html:not(.dark) body .zea-brain-tab .zea-super-admin-model-badge {
+  color: #805600 !important;
+}
+
+html:not(.dark) body .zea-tts-model-badge {
+  color: #805600 !important;
+}
+
+html:not(.dark) body .zea-test-pronunciation-button {
+  color: #11120f !important;
+  background: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-test-pronunciation-button:hover {
+  background: #c99118 !important;
+}
+
+html:not(.dark) body .zea-manage-pronunciation-groups {
+  color: #11120f !important;
+  background: #dfa822 !important;
+  border-color: #c99118 !important;
+}
+
+html:not(.dark) body .zea-manage-pronunciation-groups:hover {
+  background: #c99118 !important;
+}
+
+html:not(.dark) body .zea-postcall-llm-helper {
+  color: #4c1d95 !important;
+}
+
+body .zea-developer-agent-tabs .zea-developer-agent-tab-active {
+  color: #11120f !important;
+  background: #dfa822 !important;
+  border-color: #e8bd54 !important;
+  box-shadow: 0 4px 12px rgba(153, 104, 7, 0.22) !important;
+}
+
+body .zea-developer-agent-tabs .zea-developer-agent-tab-icon-active {
+  color: #11120f !important;
+}
+
+body .zea-developer-agent-tabs .zea-developer-agent-tab-inactive:hover {
+  color: #8a6200 !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+body .zea-developer-agent-tabs .zea-developer-agent-tab-inactive:hover svg {
+  color: #dfa822 !important;
+}
+
+html.dark body .zea-developer-agent-tabs {
+  background: rgba(10, 11, 8, 0.96) !important;
+  border-color: rgba(223, 168, 34, 0.26) !important;
+}
+
+html.dark body .zea-developer-agent-tabs > div > div > div {
+  background: #171914 !important;
+}
+
+html.dark body .zea-developer-agent-tabs .zea-developer-agent-tab-inactive {
+  color: #e9d99f !important;
+}
+
+html.dark body .zea-developer-agent-tabs .zea-developer-agent-tab-inactive:hover {
+  color: #fff3c4 !important;
+  background: rgba(223, 168, 34, 0.16) !important;
+}
+
+.zea-agent-tabs-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.7) rgba(226, 232, 240, 0.6);
+}
+
+.zea-agent-tabs-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.zea-agent-tabs-scroll::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.6);
+  border-radius: 999px;
+}
+
+.zea-agent-tabs-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.7);
+  border-radius: 999px;
+}
+
+html.dark body .zea-agent-tabs-scroll {
+  scrollbar-color: rgba(223, 168, 34, 0.7) rgba(255, 255, 255, 0.08);
+}
+
+html.dark body .zea-agent-tabs-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html.dark body .zea-agent-tabs-scroll::-webkit-scrollbar-thumb {
+  background: rgba(223, 168, 34, 0.7);
+}
+
+/* Developer agent-editor tab panels use the application gold accent. */
+body .zea-developer-agent-editor [class*="text-[#dfa822]"] {
+  color: #b78513 !important;
+}
+
+body .zea-developer-agent-editor [class*="bg-[#dfa822]"] {
+  background-color: rgba(223, 168, 34, 0.12) !important;
+}
+
+body .zea-developer-agent-editor [class*="border-[#dfa822]"] {
+  border-color: rgba(223, 168, 34, 0.48) !important;
+}
+
+body .zea-developer-agent-editor [class*="hover:text-[#dfa822]"]:hover {
+  color: #8a6200 !important;
+}
+
+body .zea-developer-agent-editor [class*="hover:border-[#dfa822]"]:hover,
+body .zea-developer-agent-editor [class*="focus:border-[#dfa822]"]:focus {
+  border-color: #dfa822 !important;
+}
+
+html.dark body .zea-developer-agent-editor [class*="text-[#dfa822]"] {
+  color: #f2cf73 !important;
+}
+
+html.dark body .zea-developer-agent-editor [class*="bg-[#dfa822]"] {
+  background-color: rgba(223, 168, 34, 0.16) !important;
+}
+
+html:not(.dark) body .zea-create-campaign-button {
+  color: #11120f !important;
+  background: #dfa822 !important;
+  border: 1px solid #e5b745 !important;
+  box-shadow: 0 8px 20px rgba(184, 128, 15, 0.22) !important;
+}
+
+html:not(.dark) body .zea-create-campaign-button:hover {
+  color: #11120f !important;
+  background: #c88e16 !important;
+}
+
+html.dark body .zea-create-campaign-button {
+  color: #11120f !important;
+  background: #dfa822 !important;
+  border: 1px solid #e5b745 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24) !important;
+}
+
+html.dark body .zea-create-campaign-button:hover {
+  color: #11120f !important;
+  background: #c88e16 !important;
+  border-color: #dfa822 !important;
+}
+
+html:not(.dark) body .zea-campaign-toast,
+html:not(.dark) body .zea-campaign-toast span {
+  color: #ffffff !important;
+}
+
+html:not(.dark) body .zea-new-campaign-form label {
+  color: #737373 !important;
+}
+
+html.dark body .zea-new-campaign-form label {
+  color: #a3a3a3 !important;
+}
+
+html:not(.dark) body .zea-batch-csv-error {
+  color: #b91c1c !important;
+}
+
+html.dark body .zea-batch-csv-error {
+  color: #fca5a5 !important;
+}
+
+html:not(.dark) body .zea-realtime-campaign-drawer {
+  background: linear-gradient(145deg, #f7e8bb, #f2d88d) !important;
+  border-color: rgba(166, 111, 12, 0.38) !important;
+  box-shadow: -18px 0 48px rgba(49, 35, 5, 0.2) !important;
+}
+
+html.dark body .zea-realtime-campaign-drawer {
+  background: linear-gradient(145deg, #151712, #090a08) !important;
+  border-color: rgba(223, 168, 34, 0.38) !important;
+  box-shadow: -18px 0 48px rgba(0, 0, 0, 0.46) !important;
+}
+
+body .zea-realtime-campaign-drawer form {
+  background: transparent !important;
+}
+
+html.dark body .zea-settings-footer {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+html.dark body .zea-settings-lock {
+  color: #e6e7ea !important;
+  background: rgba(148, 163, 184, 0.12) !important;
+}
+
+body .zea-settings-info-trigger {
+  color: #171717 !important;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+body .zea-settings-info-trigger:hover {
+  color: #b78513 !important;
+  background: rgba(223, 168, 34, 0.1) !important;
+}
+
+html:not(.dark) body .zea-settings-info-tooltip {
+  color: #29261f !important;
+  background: #ffffff !important;
+  border-color: rgba(223, 168, 34, 0.24) !important;
+}
+
+html.dark body .zea-settings-info-trigger {
+  color: #dfa822 !important;
+}
+
+html.dark body .zea-settings-info-trigger:hover {
+  color: #fff3c4 !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html.dark body .zea-settings-info-tooltip {
+  color: #f8f5e8 !important;
+  background: #11120f !important;
+  border-color: rgba(223, 168, 34, 0.38) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48) !important;
+}
+
+body .zea-settings-alert-trigger {
+  color: #b78513 !important;
+  background: rgba(223, 168, 34, 0.1) !important;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+body .zea-settings-alert-trigger:hover {
+  color: #8b6500 !important;
+  background: rgba(223, 168, 34, 0.18) !important;
+}
+
+html:not(.dark) body .zea-settings-alert-tooltip {
+  color: #29261f !important;
+  background: #fffdf8 !important;
+  border-color: rgba(223, 168, 34, 0.34) !important;
+}
+
+html.dark body .zea-settings-alert-trigger {
+  color: #dfa822 !important;
+  background: rgba(223, 168, 34, 0.12) !important;
+}
+
+html.dark body .zea-settings-alert-trigger:hover {
+  color: #fff3c4 !important;
+  background: rgba(223, 168, 34, 0.2) !important;
+}
+
+html.dark body .zea-settings-alert-tooltip {
+  color: #f8f5e8 !important;
+  background: #11120f !important;
+  border-color: rgba(223, 168, 34, 0.42) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48) !important;
+}
+
+html.dark body .zea-settings-alert-tooltip span,
+html.dark body .zea-settings-alert-tooltip strong {
+  color: inherit !important;
+}
+
+body .zea-settings-alert-tooltip {
+  z-index: 10000 !important;
+}
+
+body .zea-login .zea-login-field input,
+body .zea-login .zea-login-field input:hover,
+body .zea-login .zea-login-field input:focus,
+body .zea-login .zea-login-field input:active,
+body .zea-login .zea-login-field input:not(:placeholder-shown) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: "DM Sans", sans-serif !important;
+}
+
+body .zea-login .zea-login-field input:-webkit-autofill,
+body .zea-login .zea-login-field input:-webkit-autofill:hover,
+body .zea-login .zea-login-field input:-webkit-autofill:focus,
+body .zea-login .zea-login-field input:-webkit-autofill:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+body .zea-login .zea-login-field input::placeholder,
+body .zea-login .zea-login-field input:hover::placeholder,
+body .zea-login .zea-login-field input:focus::placeholder,
+body .zea-login .zea-login-field input:active::placeholder,
+body .zea-login .zea-login-field input:-webkit-autofill::placeholder {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.68) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.68) !important;
+  font-size: inherit;
+  opacity: 1 !important;
+}
+
+/* Replace the browser's square focus box with a theme-consistent,
+   non-enclosing indicator so keyboard focus remains discoverable. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus,
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: none !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  box-shadow: inset 0 -2px 0 rgba(223, 168, 34, 0.9) !important;
+}
+
+/* Larger, more readable typography scoped to Companies → Inspect. */
+.zea-company-inspect .text-\[9px\] {
+  font-size: 0.75rem !important;
+}
+
+.zea-company-inspect .text-\[10px\] {
+  font-size: 0.8125rem !important;
+}
+
+.zea-company-inspect .text-xs {
+  font-size: 0.875rem !important;
+  line-height: 1.35rem !important;
+}
+
+.zea-company-inspect .text-sm {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+.zea-company-inspect .text-base {
+  font-size: 1.125rem !important;
+  line-height: 1.65rem !important;
+}
+
+.zea-company-inspect .text-lg {
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
+}
+
+.zea-company-inspect .text-xl {
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
+}
+
+.zea-company-inspect .text-2xl {
+  font-size: 1.875rem !important;
+  line-height: 2.25rem !important;
+}
+
+.zea-company-inspect .text-4xl {
+  font-size: 2.625rem !important;
+  line-height: 1.1 !important;
+}
+
+@media (min-width: 768px) {
+  .zea-company-inspect .md\:text-base {
+    font-size: 1.125rem !important;
+  }
+
+  .zea-company-inspect .md\:text-lg {
+    font-size: 1.25rem !important;
+  }
+
+  .zea-company-inspect .md\:text-3xl {
+    font-size: 2.125rem !important;
+    line-height: 2.5rem !important;
+  }
+
+  .zea-company-inspect .md\:text-5xl {
+    font-size: 3.25rem !important;
+    line-height: 1.05 !important;
+  }
+}
+
+/* Shared authenticated form language based on the light/dark references.
+   The separately designed login form is intentionally outside this scope. */
+html:not(.dark) body .zea-premium-shell {
+  --zea-form-surface: #fffdfa;
+  --zea-form-header: #fffbf4;
+  --zea-form-field: #fffdf9;
+  --zea-form-border: #e8dfd0;
+  --zea-form-divider: #eee3d1;
+  --zea-form-text: #111827;
+  --zea-form-muted: #68707d;
+}
+
+html.dark body .zea-premium-shell {
+  --zea-form-surface: #0c1626;
+  --zea-form-header: #0e192a;
+  --zea-form-field: #091321;
+  --zea-form-border: #344257;
+  --zea-form-divider: #263449;
+  --zea-form-text: #f8fafc;
+  --zea-form-muted: #aeb8c8;
+}
+
+body .zea-premium-shell form {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+}
+
+body .zea-premium-shell form label {
+  color: var(--zea-form-text) !important;
+}
+
+body .zea-premium-shell form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+body .zea-premium-shell form select,
+body .zea-premium-shell form textarea {
+  min-height: 2.875rem;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-field) !important;
+  background-color: var(--zea-form-field) !important;
+  border: 1px solid var(--zea-form-border) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: none !important;
+}
+
+body .zea-premium-shell form input:not([type="checkbox"]):not([type="radio"]):focus,
+body .zea-premium-shell form select:focus,
+body .zea-premium-shell form textarea:focus {
+  border-color: #dfa822 !important;
+  box-shadow: inset 0 -2px 0 rgba(223, 168, 34, 0.9) !important;
+}
+
+body .zea-premium-shell form input::placeholder,
+body .zea-premium-shell form textarea::placeholder {
+  color: var(--zea-form-muted) !important;
+  -webkit-text-fill-color: var(--zea-form-muted) !important;
+  opacity: 1 !important;
+}
+
+body .zea-premium-shell form select option {
+  color: var(--zea-form-text);
+  background: var(--zea-form-surface);
+}
+
+body .zea-premium-shell form h3,
+body .zea-premium-shell form h4 {
+  color: var(--zea-form-text) !important;
+}
+
+body .zea-premium-shell form button[type="submit"] {
+  color: #0a0b08 !important;
+  background: #dfa822 !important;
+  border-color: #edc45b !important;
+  box-shadow: 0 8px 20px rgba(143, 96, 4, 0.2) !important;
+}
+
+body .zea-premium-shell form button[type="submit"]:hover:not(:disabled) {
+  color: #0a0b08 !important;
+  background: #e8b83f !important;
+  border-color: #f3cf72 !important;
+}
+
+html:not(.dark) body .zea-premium-shell form,
+html:not(.dark) body .zea-company-create-modal,
+html:not(.dark) body .zea-company-edit-modal {
+  scrollbar-color: #eee5d5 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell form::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell form::-webkit-scrollbar-thumb:hover,
+html:not(.dark) body .zea-company-create-modal::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-company-create-modal::-webkit-scrollbar-thumb:hover,
+html:not(.dark) body .zea-company-edit-modal::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-company-edit-modal::-webkit-scrollbar-thumb:hover {
+  background: #eee5d5 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .zea-company-create-modal,
+html:not(.dark) body .zea-company-create-modal form {
+  background: var(--zea-form-surface) !important;
+}
+
+html.dark body .zea-company-create-modal,
+html.dark body .zea-company-create-modal form {
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+}
+
+html:not(.dark) body .zea-company-create-modal .zea-company-create-header,
+html.dark body .zea-company-create-modal .zea-company-create-header {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell form.zea-company-edit-modal {
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28) !important;
+}
+
+body .zea-premium-shell form.zea-company-user-edit-modal {
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28) !important;
+}
+
+body .zea-premium-shell .zea-company-edit-modal .zea-company-edit-header,
+body .zea-premium-shell .zea-company-user-edit-modal .zea-company-user-edit-header {
+  margin: -1.5rem -1.5rem 1.25rem;
+  padding: 1.25rem 1.5rem;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-company-edit-modal > .border-t,
+body .zea-premium-shell .zea-company-user-edit-modal > .border-t {
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-company-user-form-card {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+}
+
+body .zea-premium-shell .zea-company-user-form-header {
+  margin: -1.5rem -1.5rem 1.25rem;
+  padding: 1.25rem 1.5rem;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-bottom: 1px solid var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell form.zea-company-user-create-form {
+  color: var(--zea-form-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+body .zea-premium-shell .zea-user-create-drawer,
+body .zea-premium-shell .zea-user-create-drawer form.zea-company-user-create-form {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+}
+
+body .zea-premium-shell .zea-user-create-drawer .zea-user-create-drawer-header {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-user-create-drawer form > :last-child {
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell form.zea-provider-edit-modal {
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  min-height: 0;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-color: var(--zea-form-border) !important;
+}
+
+body .zea-premium-shell .zea-provider-edit-header,
+body .zea-premium-shell .zea-provider-edit-footer {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-provider-edit-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+  background: var(--zea-form-surface) !important;
+}
+
+body .zea-premium-shell .zea-provider-create-drawer {
+  max-height: 100dvh;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-left: 1px solid var(--zea-form-border) !important;
+  box-shadow: -24px 0 70px rgba(0, 0, 0, 0.28) !important;
+}
+
+body .zea-premium-shell .zea-provider-create-header {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-provider-create-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+  background: var(--zea-form-surface) !important;
+}
+
+body .zea-premium-shell form.zea-provider-create-form {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+body .zea-premium-shell form.zea-provider-create-form input {
+  min-width: 0;
+}
+
+body .zea-premium-shell .zea-telephony-create-drawer {
+  max-height: 100dvh;
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-surface) !important;
+  border-left: 1px solid var(--zea-form-border) !important;
+  box-shadow: -24px 0 70px rgba(0, 0, 0, 0.28) !important;
+}
+
+body .zea-premium-shell .zea-telephony-create-header {
+  color: var(--zea-form-text) !important;
+  background: var(--zea-form-header) !important;
+  border-color: var(--zea-form-divider) !important;
+}
+
+body .zea-premium-shell .zea-telephony-create-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+  background: var(--zea-form-surface) !important;
+}
+
+body .zea-premium-shell form.zea-telephony-create-form {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-telephony-create-body {
+  scrollbar-color: #eee5d5 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-telephony-create-body::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell .zea-telephony-create-body::-webkit-scrollbar-thumb:hover {
+  background: #eee5d5 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-provider-create-body {
+  scrollbar-color: #eee5d5 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-provider-create-body::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell .zea-provider-create-body::-webkit-scrollbar-thumb:hover {
+  background: #eee5d5 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-provider-edit-body {
+  scrollbar-color: #eee5d5 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-provider-edit-body::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell .zea-provider-edit-body::-webkit-scrollbar-thumb:hover {
+  background: #eee5d5 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .zea-provider-metrics {
+  background: #fffdfa !important;
+  border-color: #eee6d9 !important;
+}
+
+html:not(.dark) body .zea-provider-metrics .zea-provider-metric {
+  border-color: #eee6d9 !important;
+}
+
+html.dark body .zea-provider-metrics {
+  background: #0d100d !important;
+  border-color: rgba(223, 168, 34, 0.2) !important;
+}
+
+html.dark body .zea-provider-metrics .zea-provider-metric {
+  border-color: rgba(223, 168, 34, 0.16) !important;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-user-create-drawer-body {
+  scrollbar-color: #eee5d5 transparent;
+}
+
+html:not(.dark) body .zea-premium-shell .zea-user-create-drawer-body::-webkit-scrollbar-thumb,
+html:not(.dark) body .zea-premium-shell .zea-user-create-drawer-body::-webkit-scrollbar-thumb:hover {
+  background: #eee5d5 !important;
+  border-color: transparent !important;
+}
+
+html:not(.dark) body .zea-company-create-modal .zea-company-form-section-title,
+html.dark body .zea-company-create-modal .zea-company-form-section-title {
+  color: var(--zea-form-text) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.4rem !important;
+}
+
+body .zea-company-create-modal form > .space-y-4 > div {
+  border-color: var(--zea-form-divider) !important;
+}

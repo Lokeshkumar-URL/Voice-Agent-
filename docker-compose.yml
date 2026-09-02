@@ -1,0 +1,67 @@
+services:
+  embedding:
+    container_name: zea-voice-embedding
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.9.3
+    env_file:
+      - ./Backend/.env
+    environment:
+      RUST_LOG: warn
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        exec text-embeddings-router
+        --model-id "$${EMBEDDING_MODEL}"
+        --served-model-name "$${EMBEDDING_MODEL}"
+        --api-key "$${EMBEDDING_API_KEY}"
+        --port 80
+        --huggingface-hub-cache /data
+    volumes:
+      - embedding-model-cache:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:80/health >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      start_period: 180s
+      retries: 5
+    networks:
+      - zea-voice
+
+  backend:
+    container_name: zea-voice-backend
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./Backend/.env
+    environment:
+      EMBEDDING_BASE_URL: http://embedding:80
+    depends_on:
+      embedding:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - zea-voice
+
+  frontend:
+    container_name: zea-voice-frontend
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - zea-voice
+
+networks:
+  zea-voice:
+    external: true
+    name: zea-voice-network
+
+volumes:
+  embedding-model-cache:
+    name: zea-voice-embedding-model-cache

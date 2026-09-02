@@ -1,0 +1,10 @@
+DOCUMENT_TYPE: GENERAL_KNOWLEDGE
+PURPOSE: Stable Hospital scheduling and callback policies that are not owned by the Product Catalog, Workflow Rules, Conversation Guidance or FAQ.
+
+TOPIC: Hospital scheduling and callback policy
+ALIASES: preferred test time | health checkup timing | Sunday booking | appointment availability | callback timing | call me later
+PREFERRED_TEST_TIME: 8:00 AM to 11:00 AM.
+SUNDAY_BOOKING: Not available.
+APPOINTMENT_AVAILABILITY: A requested appointment slot is not confirmed until the configured booking tool or Hospital team verifies it.
+CALLBACK_AVAILABLE: A caller may request a callback when they are busy or unable to continue.
+CALLBACK_WINDOW: 8:00 AM to 8:00 PM.

@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+env.example
+.git
+.gitignore
+coverage
+scripts/*
+!scripts/verify-*.js
+!scripts/lib/
+!scripts/lib/**
+!scripts/fixtures/
+!scripts/fixtures/**
+README.md
+MIGRATIONS.md
+docker-compose.yml

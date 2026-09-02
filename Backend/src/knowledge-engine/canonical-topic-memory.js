@@ -1,0 +1,248 @@
+export const CANONICAL_TOPIC_MEMORY_VERSION = 3;
+
+const catalogTypes = new Set(['CATALOG_ITEM', 'CATALOG_CATEGORY']);
+
+function clean(value, maximum = 240) {
+  return String(value ?? '').normalize('NFKC').replace(/[\p{Cc}\p{Cf}]/gu, ' ')
+    .replace(/\s+/gu, ' ').trim().slice(0, maximum);
+}
+
+function normalized(value) {
+  return clean(value, 200).toLocaleLowerCase();
+}
+
+function revision(value) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) ? parsed : null;
+}
+
+function scoped(scope = {}) {
+  const result = Object.freeze({
+    tenantId: clean(scope.tenantId, 160),
+    agentId: clean(scope.agentId, 160),
+    callId: clean(scope.callId, 160),
+  });
+  if (!result.tenantId || !result.agentId || !result.callId) {
+    throw new TypeError('Canonical topic resolution requires tenant, agent and call scope');
+  }
+  return result;
+}
+
+function canonicalRecord(source, scope) {
+  if (source?.tenantId && normalized(source.tenantId) !== normalized(scope.tenantId)) return null;
+  if (source?.agentId && normalized(source.agentId) !== normalized(scope.agentId)) return null;
+  if (!source || source.hydrationValidated !== true || source.publicationValidated !== true
+    || !catalogTypes.has(String(source.recordType ?? '').toLocaleUpperCase())) return null;
+  const data = source.authoritativeData ?? {};
+  const category = String(source.recordType).toLocaleUpperCase() === 'CATALOG_CATEGORY';
+  const recordId = clean(source.recordId, 160);
+  const key = clean(category ? data.categoryKey : data.itemKey, 160);
+  const name = clean(category ? data.category : data.name, 240);
+  if (!recordId || !key || !name) return null;
+  return Object.freeze({
+    id: recordId,
+    recordId,
+    tenantId: clean(source.tenantId, 160),
+    agentId: clean(source.agentId, 160),
+    knowledgeBaseId: clean(source.knowledgeBaseId, 160),
+    publicationRevision: revision(source.publicationRevision),
+    recordType: category ? 'CATALOG_CATEGORY' : 'CATALOG_ITEM',
+    entityType: category ? 'CATEGORY' : 'ITEM',
+    key,
+    name,
+    category: clean(data.category, 240) || null,
+    categoryKey: clean(data.categoryKey, 160) || null,
+  });
+}
+
+function unresolvedResolution(resolution, reason) {
+  return Object.freeze({
+    version: CANONICAL_TOPIC_MEMORY_VERSION,
+    scope: resolution.scope,
+    mode: 'UNRESOLVED',
+    activeEntity: null,
+    activeCategory: null,
+    comparisonEntities: Object.freeze([]),
+    requiresTargetedClarification: false,
+    reason,
+  });
+}
+
+/**
+ * Confirms that a proposed memory change is backed by the same tenant-published
+ * PostgreSQL records used for the validated turn. Retrieved alternatives never
+ * become memory merely because they appeared in the top five.
+ */
+export function confirmCanonicalTopicResolution(resolution = {}, {
+  decision = {}, hydratedRecords = [],
+} = {}) {
+  const mode = clean(resolution.mode, 40).toLocaleUpperCase();
+  if (!['EXPLICIT', 'CONTEXTUAL', 'COMPARISON'].includes(mode)) {
+    return unresolvedResolution(resolution, resolution.reason ?? 'canonical_selection_unconfirmed');
+  }
+  if (decision.valid !== true || String(decision.decision ?? '').toLocaleLowerCase() === 'clarify') {
+    return unresolvedResolution(resolution, 'grounded_decision_did_not_confirm_entity');
+  }
+  const targets = mode === 'COMPARISON'
+    ? resolution.comparisonEntities ?? []
+    : [resolution.activeEntity ?? resolution.activeCategory].filter(Boolean);
+  const structurallyValid = targets.length > 0 && targets.every((target) => {
+    const recordType = clean(target?.recordType, 80).toLocaleUpperCase();
+    if (mode === 'COMPARISON') return recordType === 'CATALOG_ITEM';
+    if (target === resolution.activeEntity) return recordType === 'CATALOG_ITEM';
+    return recordType === 'CATALOG_CATEGORY';
+  });
+  if (!structurallyValid) {
+    return unresolvedResolution(resolution, 'canonical_entity_type_mismatch');
+  }
+  const byRecordId = new Map((Array.isArray(hydratedRecords) ? hydratedRecords : [])
+    .filter((record) => record?.recordId)
+    .map((record) => [normalized(record.recordId), record]));
+  const selectedSourceIds = new Set((decision.evidenceIds ?? [])
+    .map((sourceId) => normalized(sourceId)).filter(Boolean));
+  const selectedEntityIdentities = new Set([
+    ...(decision.selectedEntityKeys ?? []),
+    ...(decision.stateUpdate?.knownEntityKeys ?? []),
+    ...(decision.selectedEntities ?? []).flatMap((entity) => (
+      [entity?.id, entity?.recordId, entity?.key, entity?.name]
+    )),
+    ...(decision.stateUpdate?.knownEntities ?? []).flatMap((entity) => (
+      [entity?.id, entity?.recordId, entity?.key, entity?.name]
+    )),
+    decision.currentTopic,
+    decision.stateUpdate?.currentTopic,
+  ].map((value) => normalized(value)).filter(Boolean));
+  const supported = targets.length > 0 && targets.every((target) => {
+    const record = byRecordId.get(normalized(target.recordId ?? target.id));
+    if (!record || record.hydrationValidated !== true || record.publicationValidated !== true) return false;
+    if (clean(record.recordType, 80).toLocaleUpperCase()
+      !== clean(target.recordType, 80).toLocaleUpperCase()) return false;
+    const sameValue = (expected, actual) => !expected || normalized(expected) === normalized(actual);
+    if (!sameValue(resolution.scope?.tenantId, record.tenantId)
+      || !sameValue(resolution.scope?.agentId, record.agentId)
+      || !sameValue(target.tenantId, record.tenantId)
+      || !sameValue(target.agentId, record.agentId)
+      || !sameValue(target.knowledgeBaseId, record.knowledgeBaseId)
+      || (revision(target.publicationRevision) !== null
+        && revision(target.publicationRevision) !== revision(record.publicationRevision))) return false;
+    const reasons = new Set((record.reservationReasons ?? []).map((reason) => normalized(reason)));
+    const selectedSameSource = normalized(record.sourceId)
+      && selectedSourceIds.has(normalized(record.sourceId));
+    if (!selectedSameSource) return false;
+    const selectedSameEntity = [target.id, target.recordId, target.key, target.name]
+      .map((value) => normalized(value)).filter(Boolean)
+      .some((value) => selectedEntityIdentities.has(value));
+    if (!selectedSameEntity) return false;
+    if (mode === 'CONTEXTUAL') {
+      return reasons.has('canonical_memory');
+    }
+    const requiredReason = mode === 'COMPARISON' ? 'explicit_comparison' : 'explicit_entity';
+    return reasons.has(requiredReason) || reasons.has('explicit_current_entity');
+  });
+  return supported ? resolution
+    : unresolvedResolution(resolution, `${mode.toLocaleLowerCase()}_entity_not_confirmed`);
+}
+
+function uniqueRecords(values = []) {
+  const records = [];
+  const seen = new Set();
+  for (const value of values) {
+    const id = normalized(value?.recordId ?? value?.id);
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    records.push(value);
+  }
+  return Object.freeze(records.slice(0, 5));
+}
+
+export function resolveCanonicalTopicMemory({
+  scope, understanding = {}, evidence = [], memory = {},
+} = {}) {
+  const isolatedScope = scoped(scope);
+  understanding = understanding && typeof understanding === 'object' ? understanding : {};
+  memory = memory && typeof memory === 'object' ? memory : {};
+  const records = uniqueRecords((Array.isArray(evidence) ? evidence : [])
+    .map((source) => canonicalRecord(source, isolatedScope)).filter(Boolean));
+  const byId = new Map(records.map((record) => [normalized(record.recordId), record]));
+  const resolveIds = (values) => uniqueRecords((Array.isArray(values) ? values : [])
+    .map((value) => byId.get(normalized(value?.recordId ?? value?.id))).filter(Boolean));
+  const comparisonEntities = resolveIds(understanding.comparisonEntities);
+  const requestedComparisonIds = [...new Set((understanding.comparisonEntities ?? [])
+    .map((value) => normalized(value?.recordId ?? value?.id)).filter(Boolean))];
+  if (requestedComparisonIds.length > 1
+    && comparisonEntities.length !== requestedComparisonIds.length) {
+    return Object.freeze({
+      version: CANONICAL_TOPIC_MEMORY_VERSION,
+      scope: isolatedScope,
+      mode: 'UNRESOLVED',
+      activeEntity: null,
+      activeCategory: null,
+      comparisonEntities: uniqueRecords(memory.comparisonEntities),
+      requiresTargetedClarification: true,
+      reason: 'comparison_records_not_fully_hydrated',
+    });
+  }
+  const explicitEntities = resolveIds(understanding.explicitEntities);
+  const explicitCategories = resolveIds(understanding.explicitCategories);
+  if (comparisonEntities.length > 1) {
+    return Object.freeze({
+      version: CANONICAL_TOPIC_MEMORY_VERSION,
+      scope: isolatedScope,
+      mode: 'COMPARISON',
+      activeEntity: null,
+      activeCategory: null,
+      comparisonEntities,
+      requiresTargetedClarification: false,
+    });
+  }
+  const explicitSelections = uniqueRecords([...explicitEntities, ...explicitCategories]);
+  if (understanding.ambiguity?.detected === true || explicitSelections.length > 1) {
+    return Object.freeze({
+      version: CANONICAL_TOPIC_MEMORY_VERSION,
+      scope: isolatedScope,
+      mode: 'UNRESOLVED',
+      activeEntity: null,
+      activeCategory: null,
+      comparisonEntities: uniqueRecords(memory.comparisonEntities),
+      requiresTargetedClarification: true,
+      reason: 'explicit_catalog_selection_ambiguous',
+    });
+  }
+  const explicit = explicitSelections[0] ?? null;
+  if (explicit) {
+    return Object.freeze({
+      version: CANONICAL_TOPIC_MEMORY_VERSION,
+      scope: isolatedScope,
+      mode: 'EXPLICIT',
+      activeEntity: explicit.entityType === 'ITEM' ? explicit : null,
+      activeCategory: explicit.entityType === 'CATEGORY' ? explicit : null,
+      comparisonEntities: Object.freeze([]),
+      requiresTargetedClarification: false,
+    });
+  }
+  if (understanding.contextDependent === true) {
+    const remembered = memory.activeEntity ?? memory.activeCategory;
+    const canonical = byId.get(normalized(remembered?.recordId ?? remembered?.id)) ?? null;
+    if (canonical) {
+      return Object.freeze({
+        version: CANONICAL_TOPIC_MEMORY_VERSION,
+        scope: isolatedScope,
+        mode: 'CONTEXTUAL',
+        activeEntity: canonical.entityType === 'ITEM' ? canonical : null,
+        activeCategory: canonical.entityType === 'CATEGORY' ? canonical : null,
+        comparisonEntities: uniqueRecords(memory.comparisonEntities),
+        requiresTargetedClarification: false,
+      });
+    }
+  }
+  return Object.freeze({
+    version: CANONICAL_TOPIC_MEMORY_VERSION,
+    scope: isolatedScope,
+    mode: 'UNRESOLVED',
+    activeEntity: null,
+    activeCategory: null,
+    comparisonEntities: uniqueRecords(memory.comparisonEntities),
+    requiresTargetedClarification: (understanding.contextualReferences?.length ?? 0) > 0,
+  });
+}
+

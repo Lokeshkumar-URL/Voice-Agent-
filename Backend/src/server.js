@@ -1,0 +1,98 @@
+import { createServer } from 'node:http';
+import { createApp } from './app.js';
+import 'dotenv/config';
+// Environment reloaded with media signing secret and call credits.
+import { env } from './config/env.js';
+import { logger } from './config/logger.js';
+import { checkDatabase, closeDatabase } from './infrastructure/database.js';
+import { runPendingMigrations } from './infrastructure/migrations.js';
+import { checkRedis, closeRedis } from './infrastructure/redis.js';
+import { closeQueues } from './queues/queue.registry.js';
+import { closeCampaignWorkers, startCampaignWorkers } from './campaigns/campaign.workers.js';
+import { assertRagInfrastructure } from './rag/rag-infrastructure.js';
+import { closeKnowledgeProcessingWorker, startKnowledgeProcessingWorker } from './knowledge-bases/knowledge-processing.worker.js';
+import { attachPlivoMediaWebSocket } from './voice/plivo-media.socket.js';
+import { attachBrowserTestMediaWebSocket } from './voice/browser-test-media.socket.js';
+import { attachRealtimeConversationOrchestrator } from './voice/realtime-conversation-orchestrator.js';
+import { closeRecordingWorker, startRecordingWorker } from './telephony/recording.worker.js';
+import { closePostCallSummaryWorker, startPostCallSummaryWorker } from './voice/postcall-summary/postcall-summary.worker.js';
+import { executePostCallSummaryJob } from './voice/postcall-summary/postcall-summary.processor.js';
+import { closeCallReconciliation, startCallReconciliation } from './voice/call-reconciliation.service.js';
+//this is test-2
+async function bootstrap() {
+  logger.info({
+    engine: 'unified_grounded_decision',
+  }, 'Voice conversation engine selected');
+  await runPendingMigrations();
+  const [databaseHealth, redisHealth, ragHealth] = await Promise.all([
+    checkDatabase(),
+    checkRedis(),
+    env.RAG_ENABLED && env.RAG_STARTUP_CHECK_ENABLED
+      ? assertRagInfrastructure()
+      : Promise.resolve({ ok: true, enabled: env.RAG_ENABLED, skipped: true }),
+  ]);
+
+  logger.info({ databaseHealth, redisHealth, ragHealth }, 'Infrastructure connections verified');
+  startCampaignWorkers();
+  await startKnowledgeProcessingWorker();
+  startRecordingWorker();
+  await startPostCallSummaryWorker(executePostCallSummaryJob);
+  startCallReconciliation();
+
+  const server = createServer(createApp());
+  const mediaWebSocket = attachPlivoMediaWebSocket(server, {
+    onSession(session) {
+      attachRealtimeConversationOrchestrator(session);
+    },
+  });
+  const browserTestMediaWebSocket = attachBrowserTestMediaWebSocket(server);
+  server.listen(env.PORT, env.HOST, () => {
+    logger.info({ host: env.HOST, port: env.PORT }, 'Zea Voice API is running');
+    logger.info({
+      icon: '🎧', stage: 'voice.media_websocket', status: 'ready',
+      mediaPath: '/webhooks/plivo/media',
+    }, '🎧 Authenticated Plivo media WebSocket is ready');
+  });
+
+  let shuttingDown = false;
+  const shutdown = async (signal) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    logger.info({ signal }, 'Graceful shutdown started');
+
+    await Promise.all([mediaWebSocket.close(), browserTestMediaWebSocket.close()]);
+
+    server.close(async (serverError) => {
+      await closeCallReconciliation();
+      const results = await Promise.allSettled([
+        closeCampaignWorkers(), closeKnowledgeProcessingWorker(), closeRecordingWorker(),
+        closePostCallSummaryWorker(), closeQueues(), closeRedis(), closeDatabase(),
+      ]);
+      const failed = results.filter((result) => result.status === 'rejected');
+
+      if (serverError || failed.length > 0) {
+        logger.error({ serverError, failed }, 'Shutdown completed with errors');
+        process.exitCode = 1;
+      } else {
+        logger.info('Graceful shutdown completed');
+      }
+    });
+
+    setTimeout(() => {
+      logger.fatal('Graceful shutdown timed out');
+      process.exit(1);
+    }, 10_000).unref();
+  };
+
+  process.on('SIGINT', () => void shutdown('SIGINT'));
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+}
+
+bootstrap().catch(async (error) => {
+  logger.fatal({ err: error }, 'Backend startup failed');
+  await Promise.allSettled([
+    closeCampaignWorkers(), closeKnowledgeProcessingWorker(), closeRecordingWorker(),
+    closePostCallSummaryWorker(), closeQueues(), closeRedis(), closeDatabase(),
+  ]);
+  process.exit(1);
+});
