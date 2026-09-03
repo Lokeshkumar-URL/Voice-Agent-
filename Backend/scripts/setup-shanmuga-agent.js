@@ -236,7 +236,7 @@ async function main() {
   let totalPointCount = 0;
   await processSemanticIndexJob(publication.semanticIndex.jobId, {
     verifyStorageObject: async () => ({ verified: true }),
-    embed: async (texts) => texts.map(() => new Array(768).fill(0.01)),
+    embed: async (texts) => texts.map(() => new Array(384).fill(0.01)),
     ensureCollection: async () => {},
     deleteKnowledgeBasePoints: async () => {},
     upsertPoints: async (tenantId, points) => { totalPointCount += points.length; },

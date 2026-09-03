@@ -13,7 +13,7 @@ const documentVersionId = '0ede12b3-765c-475f-bacd-5b2787b34d37';
 const tenantOneCollection = collectionForTenant(tenantOne);
 const tenantTwoCollection = collectionForTenant(tenantTwo);
 assert.notEqual(tenantOneCollection, tenantTwoCollection);
-assert.match(tenantOneCollection, /^zea_voice_company_e5_base_[a-f0-9_]+$/);
+assert.match(tenantOneCollection, /^zea_voice_company_e5_small_v1_[a-f0-9_]+$/);
 assert.throws(() => collectionForTenant('../shared'), /valid tenant UUID/);
 
 const payload = tenantVectorPayload({
