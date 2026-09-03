@@ -15,7 +15,7 @@ const runtimeEnvironment = (import.meta as ImportMeta & { env?: Record<string, s
 const isBrowser = typeof window !== 'undefined';
 const isRemoteHost = isBrowser && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 const defaultApiBaseUrl = (isRemoteHost || !runtimeEnvironment?.VITE_API_BASE_URL
-  ? (isBrowser ? window.location.origin : 'http://localhost:1112')
+  ? (isBrowser ? `${window.location.origin}/api` : 'http://localhost:1112')
   : runtimeEnvironment.VITE_API_BASE_URL).replace(/\/$/, '');
 
 function bytesToBase64(bytes: Uint8Array) {

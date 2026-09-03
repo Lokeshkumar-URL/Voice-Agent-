@@ -13,7 +13,7 @@ import {
 const isBrowser = typeof window !== 'undefined';
 const isRemoteHost = isBrowser && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 const API_BASE_URL = (isRemoteHost || !import.meta.env.VITE_API_BASE_URL
-  ? (isBrowser ? window.location.origin : 'http://localhost:1112')
+  ? (isBrowser ? `${window.location.origin}/api` : 'http://localhost:1112')
   : import.meta.env.VITE_API_BASE_URL).replace(/\/$/, '');
 const TOKEN_KEY = 'zea_voice_access_token';
 export const SESSION_EXPIRED_EVENT = 'zea:session-expired';
