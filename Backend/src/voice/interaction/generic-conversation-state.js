@@ -323,9 +323,9 @@ export function openGenericConversationState(identity, settings = {}, now = Date
       initial.collectedToolFields ?? initial.collectedInformation ?? initial.collectedData ?? {}, fieldKeys,
     ),
     recentTurns: configuration.mode === 'full_current_call'
-      ? (initial.recentTurns ?? initial.messages ?? []).map(cleanMessage).filter(Boolean)
+      ? (initial.recentTurns ?? initial.recentMessages ?? initial.messages ?? []).map(cleanMessage).filter(Boolean)
         .slice(-maximumMessages)
-      : recent((initial.recentTurns ?? initial.messages ?? []).map(cleanMessage).filter(Boolean),
+      : recent((initial.recentTurns ?? initial.recentMessages ?? initial.messages ?? []).map(cleanMessage).filter(Boolean),
         configuration.recentTurns),
     lastAnswer: cleanText(initial.lastAnswer, maximumMessageCharacters) || null,
     activeToolRequest: cleanToolRequest(initial.activeTool ?? initial.activeToolRequest),

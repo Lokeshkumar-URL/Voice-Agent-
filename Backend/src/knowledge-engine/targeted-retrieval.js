@@ -697,9 +697,8 @@ function validSparseDocuments(indexes, input, scope, allowedTypes) {
 }
 
 // Minimum BM25 score a candidate must reach before it is eligible to
-// contribute to RRF. A single weak token hit that barely exceeds zero is
-// rejected here so it cannot crowd out stronger Qdrant or structured results.
-const BM25_MIN_SCORE = 0.3;
+// contribute to RRF. Lowered to 0.15 to allow fuzzy token matches and STT variations.
+const BM25_MIN_SCORE = 0.15;
 
 function buildEnrichedSparseQuery(queryContext, recordScope) {
   // Start with the standard sparse text already built by the retrieval query.

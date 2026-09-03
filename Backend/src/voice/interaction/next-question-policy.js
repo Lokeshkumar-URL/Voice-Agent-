@@ -213,7 +213,7 @@ function confirmationForTool({
     /\{\{\s*([a-z][a-z0-9_]{0,63})\s*\}\}/giu,
     (match, key) => text(collected[String(key).toLocaleLowerCase()], 500) || match,
   );
-  const question = text(`${details.join(', ')}. ${rendered}`, 2_000);
+  const question = text(details.length ? `${details.join(', ')}. ${rendered}` : rendered, 2_000);
   if (!question) return null;
   return Object.freeze({
     key: `confirm_${toolIdentity(authorization.tool.name)}`,

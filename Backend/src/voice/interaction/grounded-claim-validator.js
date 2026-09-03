@@ -144,9 +144,11 @@ function unsupportedStructuredIdentifiers(claim, evidenceText, callerProvidedFie
   const evidence = new Set(normalizedEvidence.split(' ')
     .filter((entry) => entry.length >= 2 || /\d/u.test(entry))
     .map((entry) => entry.toLocaleUpperCase()));
+  const commonWords = new Set(['TTS', 'STT', 'LLM', 'API', 'URL', 'ID', 'YOUR', 'THIS', 'THAT', 'THEY', 'WITH', 'FROM', 'HAVE', 'WILL', 'WHAT', 'WHEN', 'WHERE', 'WHICH', 'PLEASE', 'THANK', 'HELLO', 'GOOD', 'SOME', 'MANY', 'MORE', 'MOST', 'HERE', 'THERE', 'ALSO', 'EACH', 'EVERY', 'JUST', 'ONLY', 'SUCH', 'BOTH', 'THE', 'AND', 'FOR', 'OUR', 'ARE', 'CAN', 'MAY', 'NOT', 'YOU', 'WAS', 'HAS', 'HAD', 'BUT', 'OUT', 'ALL', 'YES', 'ITS']);
   const claimed = (String(claim).match(/\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*\b/gu) ?? [])
     .filter((entry) => entry.replace(/-/gu, '').length >= 2)
-    .map((entry) => entry.toLocaleUpperCase());
+    .map((entry) => entry.toLocaleUpperCase())
+    .filter((entry) => !commonWords.has(entry));
   return [...new Set(claimed)].filter((entry) => {
     if (callerFieldSupportsIdentifier(claim, entry, callerProvidedFields)) return false;
     if (evidence.has(entry)) return false;

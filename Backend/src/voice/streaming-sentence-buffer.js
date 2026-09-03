@@ -1,6 +1,11 @@
 const sentencePunctuation = new Set(['.', '!', '?', '…', '।', '。', '！', '？']);
+const clausePunctuation = new Set([',', ';', ':', '-', '—']);
 const closingCharacters = new Set(['"', "'", '’', '”', ')', ']', '}']);
 const abbreviations = new Set(['mr', 'mrs', 'ms', 'dr', 'prof', 'sr', 'jr', 'vs', 'etc', 'e.g', 'i.e']);
+
+function wordCount(text) {
+  return (String(text ?? '').normalize('NFKC').match(/[\p{L}\p{N}]+/gu) || []).length;
+}
 
 function wordBefore(text, index) {
   let start = index - 1;
@@ -19,14 +24,22 @@ function isSentenceBoundary(text, punctuationIndex) {
   }
   let end = punctuationIndex + 1;
   while (end < text.length && closingCharacters.has(text[end])) end += 1;
-  return end === text.length || /\s/u.test(text[end]);
+  return end === text.length || /\s/u.test(text[end] ?? '');
 }
 
 function extractCompleteSentences(value) {
   const sentences = [];
   let start = 0;
   for (let index = 0; index < value.length; index += 1) {
-    if (!sentencePunctuation.has(value[index]) || !isSentenceBoundary(value, index)) continue;
+    const char = value[index];
+    const isSentence = sentencePunctuation.has(char);
+    const isClause = clausePunctuation.has(char);
+    if (!isSentence && !isClause) continue;
+    if (!isSentenceBoundary(value, index)) continue;
+
+    const candidate = value.slice(start, index).trim();
+    if (isClause && wordCount(candidate) < 4) continue;
+
     let end = index + 1;
     while (end < value.length && closingCharacters.has(value[end])) end += 1;
     const sentence = value.slice(start, end).trim();

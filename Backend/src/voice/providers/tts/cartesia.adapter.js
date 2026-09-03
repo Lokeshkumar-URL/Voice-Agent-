@@ -54,13 +54,13 @@ export function createCartesiaTtsAdapter({ providerConfig, runtimeContext = {} }
         const headers = { 'content-type': 'application/json', accept: 'text/event-stream', 'Cartesia-Version': configuration.version ?? '2024-06-10' };
         if (configuration.accessToken) headers.Authorization = `Bearer ${configuration.accessToken}`;
         else headers['X-API-Key'] = configuration.apiKey;
-        const isUuid = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(str ?? ''));
-        const effectiveVoiceId = isUuid(configuration.voiceId) ? configuration.voiceId : 'fb7d8d97-9730-4165-bd79-36b5ce61b5f2';
+        const effectiveVoiceId = configuration.voiceId ? configuration.voiceId : 'fb7d8d97-9730-4165-bd79-36b5ce61b5f2';
         const body = {
           model_id: configuration.model || 'sonic-3.5',
           transcript: synthesis.text,
           voice: { mode: 'id', id: effectiveVoiceId },
           context_id: randomUUID(),
+          language: configuration.language ? configuration.language.split('-')[0] : 'en',
           output_format: outputFormat(configuration.outputFormat),
           generation_config: {
             speed: Math.min(1.5, Math.max(0.6, configuration.speed)),

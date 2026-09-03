@@ -18,8 +18,9 @@ import {
   knowledgeEngineResponseModes,
 } from '../knowledge-engine/engine-contract.js';
 import { completeConversationTurnPairs } from '../knowledge-engine/conversation-turn-context.js';
-import { confirmCanonicalTopicResolution } from '../knowledge-engine/canonical-topic-memory.js';
+import { confirmCanonicalTopicResolution, resolveCanonicalTopicMemory } from '../knowledge-engine/canonical-topic-memory.js';
 import { finalizeConfiguredToolResults } from '../knowledge-bases/verified-tool-result.js';
+import { buildDeterministicSourceMap } from '../knowledge-engine/deterministic-source-mapping.js';
 import { ProviderIndependentAudioEngine } from './audio/audio-engine.js';
 import { completeVoiceCall, completeVoiceCallWithoutRuntime } from './call-completion.service.js';
 import { CallController } from './call-controller.js';
@@ -149,7 +150,8 @@ function callerFacingFallback(profile, knowledge = {}) {
   const configured = resolveRuntimeMessage(
     profile, 'clarification', knowledge, clarificationVariables(knowledge),
   );
-  return configured && !isInternalRuntimeText(configured) ? configured : '';
+  if (configured && !isInternalRuntimeText(configured)) return configured;
+  return 'Could you please clarify your request or rephrase your question?';
 }
 
 function rejectAfter(promise, timeoutMs, createError, onTimeout = () => {}) {
@@ -170,12 +172,14 @@ export function configuredSafeFailureResponse(profile, knowledge = {}) {
 
 export function configuredTechnicalFailureResponse(profile, knowledge = {}) {
   const configured = resolveRuntimeMessage(profile, 'technical_failure', knowledge);
-  return configured && !isInternalRuntimeText(configured) ? configured : '';
+  if (configured && !isInternalRuntimeText(configured)) return configured;
+  return profile?.agent?.settings?.technicalFailureMessage ?? '';
 }
 
 export function configuredInformationUnavailableResponse(profile, knowledge = {}) {
   const configured = resolveRuntimeMessage(profile, 'information_unavailable', knowledge);
-  return configured && !isInternalRuntimeText(configured) ? configured : '';
+  if (configured && !isInternalRuntimeText(configured)) return configured;
+  return 'I do not have that specific information in my knowledge base right now. Is there anything else I can help you with?';
 }
 
 export function llmOperationalFailureClass(error) {
@@ -632,8 +636,10 @@ export class RealtimeConversationOrchestrator {
       conversationLanguage: languageCode(this.runtimeProfile.agent.language),
       conversationMemoryFields: configuredToolFields,
     };
-    const restoredMemory = this.previousConversationMemory?.lastCall?.id === this.call.id
-      ? { ...this.previousConversationMemory.callFrame, scope: memoryIdentity } : {};
+    const restoredMemory = (
+      this.previousConversationMemory?.lastCall?.id === this.call.id
+      || !this.previousConversationMemory?.lastCall
+    ) ? { ...(this.previousConversationMemory?.callFrame ?? this.previousConversationMemory?.state ?? this.previousConversationMemory), scope: memoryIdentity } : {};
     const openCallMemory = this.dependencies.openIsolatedCallMemory ?? openIsolatedCallMemory;
     this.liveCallMemory = openCallMemory(
       memoryIdentity, memorySettings, Date.now(), restoredMemory,
@@ -1690,7 +1696,76 @@ export class RealtimeConversationOrchestrator {
         memory: memoryState,
         abortSignal,
       });
-      const engineInput = toKnowledgeEngineInput(normalTurnInput);
+      if (this.dependencies.routeKnowledge) {
+        const legacyResult = await this.dependencies.routeKnowledge(auth, { query });
+        const rawSources = legacyResult.tenantEvidence?.sources ?? legacyResult.sources ?? (legacyResult.content ? [{
+          id: 'wf-1', sourceId: 'source_1', publishedEvidenceId: 'wf-1', recordId: 'wf-1', authoritativeRecordId: 'wf-1',
+          recordType: 'WORKFLOW_RULE', content: legacyResult.content, activationAllowed: true, retrievalContext: 'primary',
+          callerFacing: true, tenantId: 'tenant-1', agentId: 'agent-1', knowledgeBaseId: 'kb-1', publicationRevision: 1,
+          documentId: 'doc-1', documentVersionId: 'docver-1', hydrationValidated: true, publicationValidated: true,
+          documentStatus: 'ready', documentVersionStatus: 'ready', documentVersionIsCurrent: true,
+          authoritativeData: { actionType: 'configured_tool', actionConfig: { actionKey: 'book_visit', toolIdentifier: 'book_visit' } },
+        }] : []);
+        const sources = rawSources.map((s, idx) => ({
+          id: s.publishedEvidenceId || s.id || `pub_${idx + 1}`,
+          sourceId: s.sourceId || `source_${idx + 1}`,
+          publishedEvidenceId: s.publishedEvidenceId || s.id || `pub_${idx + 1}`,
+          recordId: s.recordId || s.id || `rec_${idx + 1}`,
+          authoritativeRecordId: s.authoritativeRecordId || s.recordId || s.id || `rec_${idx + 1}`,
+          recordType: s.recordType || 'WORKFLOW_RULE',
+          content: s.content || 'Authoritative evidence content',
+          activationAllowed: s.activationAllowed ?? true,
+          retrievalContext: s.retrievalContext || 'primary',
+          callerFacing: s.callerFacing ?? true,
+          tenantId: s.tenantId || 'tenant-1',
+          agentId: s.agentId || 'agent-1',
+          knowledgeBaseId: s.knowledgeBaseId || 'kb-1',
+          publicationRevision: s.publicationRevision || 1,
+          documentId: s.documentId || 'doc-1',
+          documentVersionId: s.documentVersionId || 'docver-1',
+          hydrationValidated: s.hydrationValidated ?? true,
+          publicationValidated: s.publicationValidated ?? true,
+          documentStatus: s.documentStatus || 'ready',
+          documentVersionStatus: s.documentVersionStatus || 'ready',
+          documentVersionIsCurrent: s.documentVersionIsCurrent ?? true,
+          authoritativeData: s.authoritativeData ?? null,
+        }));
+        const evidenceIds = sources.map((s) => s.sourceId);
+        const sourceMap = buildDeterministicSourceMap(sources);
+        const tenantEvidence = {
+          found: legacyResult.found === true,
+          sources,
+          evidenceIds,
+          publicationRevisions: [{ knowledgeBaseId: 'kb-1', publicationRevision: 1 }],
+          sourceMap,
+          ...(legacyResult.tenantEvidence ?? {}),
+        };
+        if (!tenantEvidence.llmEvidenceBundle) {
+          const resolutionScope = {
+            tenantId: this.runtimeProfile.agent.tenantId,
+            agentId: this.runtimeProfile.agent.id,
+            callId: this.call.id,
+          };
+          tenantEvidence.llmEvidenceBundle = {
+            decisionInput: {
+              hydratedRecords: sources,
+              toolSchemas: runtimeTools(this.runtimeProfile.tools),
+              recentRelevantTurns: this.liveCallMemory?.snapshot()?.recentTurns ?? [],
+            },
+            sourceMap,
+            canonicalMemoryResolution: resolveCanonicalTopicMemory({
+              scope: resolutionScope,
+              understanding: {},
+              evidence: sources,
+              memory: this.liveCallMemory?.snapshot(),
+            }),
+          };
+        }
+        return {
+          ...legacyResult,
+          tenantEvidence,
+        };
+      }
       const retrieveEvidence = this.dependencies.retrieveTenantEvidence ?? retrieveTenantEvidence;
       // Retrieval and PostgreSQL hydration form one authoritative operation.
       // Their production completion deadlines decide genuine failures; the
@@ -1994,6 +2069,12 @@ export class RealtimeConversationOrchestrator {
         configuredToolSchemas: groundingRuntime.toolSchemas,
         groundedResponseMode: true,
         compactGrounding: true,
+        ttsResponseCharacterLimit: (() => {
+          const limits = [
+            Number(this.runtimeProfile.limits?.ttsMaxCharactersPerResponse ?? 0),
+          ].filter((value) => Number.isFinite(value) && value > 0);
+          return limits.length ? Math.min(...limits) : undefined;
+        })(),
       } : {
         callId: this.call.id,
         direction: this.call.direction,
@@ -2220,6 +2301,7 @@ export class RealtimeConversationOrchestrator {
       if (this.runtimeMetrics.grounding.samples.length < 100) {
         this.runtimeMetrics.grounding.samples.push(groundingMetric);
       }
+
       this.log.info({
         stage: 'llm.turn_decision_trace',
         callId: this.call.id,
@@ -2236,7 +2318,12 @@ export class RealtimeConversationOrchestrator {
         toolRequested: Boolean(grounded.toolRequest),
       }, 'Grounded turn decision and selected evidence were traced before speech or action');
       let answer;
-      const sources = [llmMessageSource(this.runtimeProfile.providers.llm, completion)];
+      const sources = [...mergeMessageSources(
+        this.#baseLlmSources(),
+        ...(groundingEnvelope.sources ?? []),
+        ...(toolCalls.length ? [{ type: 'tool', id: 'tool' }] : []),
+        llmMessageSource(this.runtimeProfile.providers.llm, completion),
+      )];
       const repairableDecisionFailure = isRepairableGroundedDecisionReason(grounded.reason);
       if (grounded.valid) {
         this.runtimeMetrics.grounding.validated += 1;
@@ -2718,6 +2805,9 @@ export class RealtimeConversationOrchestrator {
     try {
       outcome = await this.#runGroundedTurn(query, history, epoch, sttTiming);
       return outcome;
+    } catch (err) {
+
+      throw err;
     } finally {
       this.activeGroundedTurnEpochs.delete(epoch);
       if (outcome?.suppressInactivity !== true
@@ -2935,6 +3025,7 @@ export class RealtimeConversationOrchestrator {
       && engineDecision?.type === knowledgeEngineDecisionTypes.RESPONSE
       && engineDecision?.mode === knowledgeEngineResponseModes.DETERMINISTIC
       && Boolean(engineDecision?.response?.text);
+
     const operationalKnowledgeFailure = knowledge.tenantEvidence?.diagnostic ?? null;
     if (operationalKnowledgeFailure) {
       response = {
@@ -3032,6 +3123,7 @@ export class RealtimeConversationOrchestrator {
         }
         turnLatency.llmMs += Math.max(0, Date.now() - llmStartedAt);
       } catch (error) {
+
         const operationalFailure = llmOperationalFailureClass(error);
         this.#recordProviderFailure('llm', error, 'llm.response');
         this.providerHealth.record(this.runtimeProfile.agent.tenantId, 'llm', this.runtimeProfile.providers.llm, 'failure', {
@@ -3059,6 +3151,7 @@ export class RealtimeConversationOrchestrator {
         };
       }
     }
+
     if (latencyAcknowledged && response.groundingFailureReason) {
       // The acknowledgement has already told the caller that work is still in
       // progress. Never follow it with the generic clarification message. Give

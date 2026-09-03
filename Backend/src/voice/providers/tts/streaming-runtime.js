@@ -60,7 +60,7 @@ export function resolveCommonTtsConfiguration(providerConfig) {
     ?? setting(parameters, 'ttsVoiceId', 'voiceId')
     ?? setting(settings, 'voice', 'speaker')
     ?? setting(parameters, 'voice', 'speaker');
-  const voiceId = isUuid(rawVoiceId) ? rawVoiceId : 'fb7d8d97-9730-4165-bd79-36b5ce61b5f2';
+  const voiceId = rawVoiceId ? String(rawVoiceId) : 'fb7d8d97-9730-4165-bd79-36b5ce61b5f2';
   if (!voiceId) throw new AppError(409, 'Selected TTS model has no voice ID', 'TTS_VOICE_ID_MISSING');
   const language = normalizeLanguage(
     setting(settings, 'ttsLanguage', 'languageCode', 'language')

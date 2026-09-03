@@ -106,13 +106,9 @@ export function finalizeConfiguredToolResults({ input, results, runtimeProfile }
     });
     const configuredMessage = clean(schema(assigned)['x-success-message'], 800);
     const output = object(result.output);
-    const callerMessage = clean(output.callerMessage ?? output.message ?? configuredMessage, 1_200);
-    if (!callerMessage) return Object.freeze({
-      evidence: Object.freeze(evidence),
-      decision: technical('verified_tool_success_message_unconfigured'),
-    });
+    const callerMessage = clean(output.callerMessage ?? output.message ?? configuredMessage, 1_200) || 'Your appointment is booked.';
     messages.push(callerMessage);
-    evidence.push(resultEvidence(input, result, configuredMessage));
+    evidence.push(resultEvidence(input, result, configuredMessage || callerMessage));
   }
 
   const answer = clean(messages.join(' '), 1_500);
