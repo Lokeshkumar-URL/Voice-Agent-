@@ -354,7 +354,8 @@ export function attachPlivoMediaWebSocket(httpServer, options = {}) {
   const upgrade = (request, socket, head) => {
     let url;
     try { url = new URL(request.url, 'http://zea-voice.local'); } catch { return rejectUpgrade(socket, 400, 'Invalid WebSocket URL'); }
-    if (url.pathname !== mediaPath && url.pathname !== `/api${mediaPath}`) return;
+    const cleanPath = url.pathname.replace(/\/$/, '');
+    if (cleanPath !== mediaPath && cleanPath !== `/api${mediaPath}` && !cleanPath.endsWith('/webhooks/plivo/media')) return;
     socket.on('error', noOp);
     void (async () => {
       try {
