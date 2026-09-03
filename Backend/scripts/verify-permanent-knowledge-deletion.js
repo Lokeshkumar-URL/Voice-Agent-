@@ -309,6 +309,33 @@ assert.equal(cacheCleanup.verified, true);
 assert.equal(cacheCleanup.remainingKeys, 0);
 assert.deepEqual([...cacheKeys], [`zea:rag:knowledge-map:${otherTenantId}:${knowledgeBaseId}:1`]);
 
+const lazyCacheKeys = new Set([
+  `zea:rag:knowledge-map:${tenantId}:${knowledgeBaseId}:1`,
+]);
+let lazyCacheConnected = false;
+const lazyCacheCleanup = await invalidateKnowledgeBaseArtifacts(tenantId, knowledgeBaseId, null, {
+  status: 'wait',
+  async connect() {
+    lazyCacheConnected = true;
+    this.status = 'ready';
+  },
+  async scan(_cursor, _match, pattern) {
+    return ['0', [...lazyCacheKeys].filter((key) => wildcardMatch(pattern, key))];
+  },
+  async del(...keys) {
+    let count = 0;
+    for (const key of keys) {
+      if (lazyCacheKeys.delete(key)) count += 1;
+    }
+    return count;
+  },
+  async exists(key) { return lazyCacheKeys.has(key) ? 1 : 0; },
+});
+assert.equal(lazyCacheConnected, true);
+assert.equal(lazyCacheCleanup.incomplete, undefined);
+assert.equal(lazyCacheCleanup.verified, true);
+assert.equal(lazyCacheCleanup.remainingKeys, 0);
+
 const queueJobs = new Map();
 for (const [id, state] of [
   ['job-waiting', 'waiting'],

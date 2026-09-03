@@ -381,7 +381,7 @@ export async function loadPublishedKnowledgeMap(auth, input, dependencies = {}) 
 
 async function invalidate(tenantId, cache, includeArtifacts) {
   const tenant = requireTenantId(tenantId);
-  if (!cache || (cache.status && cache.status !== 'ready')) return { deletedKeys: 0, incomplete: true };
+  if (!await ensureCacheReady(cache)) return { deletedKeys: 0, incomplete: true };
   if (!includeArtifacts) return { deletedKeys: 0, verified: true, remainingKeys: 0 };
   const patterns = [
     `zea:rag:knowledge-map:${tenant}:*`, `zea:rag:bm25:${tenant}:*`,
@@ -415,6 +415,19 @@ export function invalidateTenantKnowledgeCache(tenantId, cache = redis) {
   return invalidate(tenantId, cache, false);
 }
 
+async function ensureCacheReady(cache) {
+  if (!cache) return false;
+  if (cache.status === 'wait' && typeof cache.connect === 'function') {
+    try {
+      await cache.connect();
+    } catch (error) {
+      logger.warn({ err: error }, 'Redis connection failed during Knowledge cache invalidation');
+      return false;
+    }
+  }
+  return !cache.status || cache.status === 'ready';
+}
+
 export async function invalidateKnowledgeBaseArtifacts(
   tenantId,
   knowledgeBaseId,
@@ -424,7 +437,7 @@ export async function invalidateKnowledgeBaseArtifacts(
   const tenant = requireTenantId(tenantId);
   const knowledgeBase = String(knowledgeBaseId ?? '').trim().toLocaleLowerCase();
   if (!knowledgeBase) throw new AppError(400, 'knowledgeBaseId is required', 'KNOWLEDGE_BASE_ID_REQUIRED');
-  if (!cache || (cache.status && cache.status !== 'ready')) {
+  if (!await ensureCacheReady(cache)) {
     return { deletedKeys: 0, incomplete: true };
   }
   const revision = publicationRevision == null ? '*' : String(publicationRevision);
@@ -462,7 +475,11 @@ export async function invalidateKnowledgeBaseArtifacts(
       } while (cursor !== '0');
     }
     return { deletedKeys, verified: remainingKeys === 0, remainingKeys };
-  } catch {
+  } catch (error) {
+    logger.warn(
+      { err: error, tenantId: tenant, knowledgeBaseId: knowledgeBase },
+      'Knowledge Base cache invalidation failed',
+    );
     return { deletedKeys, incomplete: true };
   }
 }
