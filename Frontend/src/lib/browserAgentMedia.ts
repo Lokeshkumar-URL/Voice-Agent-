@@ -12,8 +12,11 @@ export type BrowserAgentMediaState =
 
 const targetSampleRate = 8000;
 const runtimeEnvironment = (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env;
-const defaultApiBaseUrl = (runtimeEnvironment?.VITE_API_BASE_URL
-  || (typeof window === 'undefined' ? 'http://localhost:1112' : window.location.origin)).replace(/\/$/, '');
+const isBrowser = typeof window !== 'undefined';
+const isRemoteHost = isBrowser && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+const defaultApiBaseUrl = (isRemoteHost || !runtimeEnvironment?.VITE_API_BASE_URL
+  ? (isBrowser ? window.location.origin : 'http://localhost:1112')
+  : runtimeEnvironment.VITE_API_BASE_URL).replace(/\/$/, '');
 
 function bytesToBase64(bytes: Uint8Array) {
   let value = '';
