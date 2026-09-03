@@ -65,6 +65,7 @@ services:
 
 networks:
   zea-voice:
+    external: true
     name: zea-voice-network
 
 volumes:
