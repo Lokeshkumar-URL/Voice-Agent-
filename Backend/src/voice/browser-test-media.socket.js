@@ -288,7 +288,7 @@ export function attachBrowserTestMediaWebSocket(httpServer, options = {}) {
     try { url = new URL(request.url, 'http://zea-voice.local'); } catch {
       return rejectUpgrade(socket, 400, 'Invalid WebSocket URL');
     }
-    if (url.pathname !== mediaPath) return;
+    if (url.pathname !== mediaPath && url.pathname !== `/api${mediaPath}`) return;
     socket.on('error', noOp);
     void (async () => {
       try {
