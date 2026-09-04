@@ -83,20 +83,38 @@ export function createPlivoApplication(authId, authToken, input, fetchImpl = fet
   }, fetchImpl, baseUrl, 'create-application');
 }
 
+export function listPlivoApplications(authId, authToken, input = {},
+  fetchImpl = fetch, baseUrl = env.PLIVO_API_BASE_URL) {
+  const query = new URLSearchParams({ limit: '20', offset: '0' });
+  if (input.name) query.set('app_name', input.name);
+  if (input.subaccountAuthId) query.set('subaccount', input.subaccountAuthId);
+  return plivoRequest(
+    authId,
+    authToken,
+    `/Account/${encodeURIComponent(authId)}/Application/?${query.toString()}`,
+    { method: 'GET' },
+    fetchImpl,
+    baseUrl,
+    'list-applications',
+  );
+}
+
 export function updatePlivoApplication(authId, authToken, applicationId, input,
   fetchImpl = fetch, baseUrl = env.PLIVO_API_BASE_URL) {
+  const body = {
+    answer_url: input.answerUrl,
+    answer_method: 'POST',
+    hangup_url: input.hangupUrl,
+    hangup_method: 'POST',
+  };
+  if (input.subaccountAuthId) body.subaccount = input.subaccountAuthId;
   return plivoRequest(
     authId,
     authToken,
     `/Account/${encodeURIComponent(authId)}/Application/${encodeURIComponent(applicationId)}/`,
     {
       method: 'POST',
-      body: JSON.stringify({
-        answer_url: input.answerUrl,
-        answer_method: 'POST',
-        hangup_url: input.hangupUrl,
-        hangup_method: 'POST',
-      }),
+      body: JSON.stringify(body),
     },
     fetchImpl,
     baseUrl,

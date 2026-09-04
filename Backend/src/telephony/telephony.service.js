@@ -4,7 +4,7 @@ import { AppError } from '../middleware/errors.js';
 import { decryptCredential, encryptCredential } from '../security/credential-crypto.js';
 import {
   createPlivoApplication, createPlivoSubaccount, deletePlivoSubaccount,
-  listPlivoNumbers, updatePlivoApplication, updatePlivoNumber,
+  listPlivoApplications, listPlivoNumbers, updatePlivoApplication, updatePlivoNumber,
 } from './plivo.client.js';
 
 function readTelephonyCredential(value) {
@@ -411,6 +411,48 @@ function plivoApplicationName(companyId) {
   return `Zea_${companyId.replace(/-/g, '').slice(0, 24)}`;
 }
 
+function duplicateApplicationError(error) {
+  return error instanceof AppError
+    && error.code === 'PLIVO_REQUEST_FAILED'
+    && /application.+already exists/i.test(error.message);
+}
+
+async function createOrRecoverCompanyApplication(mainAccount, mainToken, input, fetchImpl) {
+  try {
+    return await createPlivoApplication(
+      mainAccount.auth_id,
+      mainToken,
+      input,
+      fetchImpl,
+      mainAccount.base_url,
+    );
+  } catch (error) {
+    if (!duplicateApplicationError(error)) throw error;
+    const listed = await listPlivoApplications(
+      mainAccount.auth_id,
+      mainToken,
+      { name: input.name },
+      fetchImpl,
+      mainAccount.base_url,
+    );
+    const application = (listed?.objects ?? []).find((item) => item.app_name === input.name);
+    if (!application?.app_id) throw error;
+    const updated = await updatePlivoApplication(
+      mainAccount.auth_id,
+      mainToken,
+      application.app_id,
+      input,
+      fetchImpl,
+      mainAccount.base_url,
+    );
+    return {
+      ...application,
+      api_id: updated?.api_id ?? application.api_id ?? null,
+      recovered: true,
+    };
+  }
+}
+
 async function ensureCompanySubaccount(client, actorUserId, mainAccount, company, fetchImpl) {
   await client.query('SELECT pg_advisory_xact_lock(hashtext($1), hashtext($2))', [mainAccount.id, company.id]);
   const existing = await client.query(
@@ -430,10 +472,10 @@ async function ensureCompanySubaccount(client, actorUserId, mainAccount, company
 
   let application;
   try {
-    application = await createPlivoApplication(mainAccount.auth_id, mainToken, {
+    application = await createOrRecoverCompanyApplication(mainAccount, mainToken, {
       name: plivoApplicationName(company.id), answerUrl: mainAccount.answer_url,
       hangupUrl: mainAccount.hangup_url, subaccountAuthId: subaccount.auth_id,
-    }, fetchImpl, mainAccount.base_url);
+    }, fetchImpl);
     if (!application?.app_id) {
       throw new AppError(502, 'Plivo did not return an application identifier', 'PLIVO_APPLICATION_RESPONSE_INVALID');
     }
