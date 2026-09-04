@@ -84,6 +84,11 @@ import { resolveCallbackConfiguration } from './interaction/callback-config.js';
 import { mergeToolFieldSchemas } from './interaction/tool-field-schema.js';
 import { resolveRuntimeMessage } from './interaction/configured-runtime-messages.js';
 import {
+  isInternalRuntimeText,
+  runtimeMessageIdentity,
+  selectConfiguredNoEvidenceResponse,
+} from './interaction/configured-no-evidence-response.js';
+import {
   applyCanonicalEntityToTaskCompletionState,
   createTaskCompletionState,
 } from './interaction/task-completion-state.js';
@@ -108,6 +113,8 @@ import {
   toolMessageSources,
 } from './source-trace.js';
 
+export { isInternalRuntimeText, selectConfiguredNoEvidenceResponse };
+
 function languageCode(value) {
   const match = String(value ?? '').match(/\b([a-z]{2,3})(?:-[A-Z]{2})?\b/);
   if (match) return match[1].toLowerCase();
@@ -122,15 +129,6 @@ function fallbackClosing(profile) {
 
 function fallbackRecovery(profile) {
   return resolveRuntimeMessage(profile, 'recovery');
-}
-
-export function isInternalRuntimeText(value) {
-  const text = String(value ?? '').normalize('NFKC').toLocaleLowerCase().replace(/\s+/gu, ' ').trim();
-  if (!text) return true;
-  return /(?:runtime_context|grounded_response_contract|response_mode|action_config|selectedentitykeys|evidencesourceids|flowaction|catalog_item_required)/iu.test(text)
-    || /\bstart or resume the configured\b/iu.test(text)
-    || /\buse (?:only )?the configured\b/iu.test(text)
-    || /^\s*(?:instruction|action|workflow|response)\s*:/iu.test(text);
 }
 
 function clarificationVariables(knowledge = {}) {
@@ -333,6 +331,12 @@ function spokenWords(value) {
   return String(value ?? '').normalize('NFKC').toLocaleLowerCase().match(spokenWordPattern) ?? [];
 }
 
+function pendingQuestionIdentity(value) {
+  if (!value) return '';
+  if (typeof value === 'object') return runtimeMessageIdentity(value.key ?? value.text);
+  return runtimeMessageIdentity(value);
+}
+
 function isPauseOnlyUtterance(text, matchedPhrase) {
   const phraseWords = spokenWords(matchedPhrase);
   const sourceWords = spokenWords(text);
@@ -372,6 +376,7 @@ export class RealtimeConversationOrchestrator {
     this.activeCancellationPromise = null;
     this.activeAssistantPlayback = null;
     this.inactivityTimer = null;
+    this.lastConfiguredFallbackSpeechIdentity = null;
     this.knowledgeReadinessPromise = null;
     this.activeGroundedTurnEpochs = new Set();
     this.callDurationTimer = null;
@@ -1396,8 +1401,10 @@ export class RealtimeConversationOrchestrator {
     // The caller may say “wait” after the previous audio has finished. This
     // is not an LLM question. Pause silently instead of generating “Hello,
     // can you hear me?” from the model.
+    let listeningAcknowledgement = false;
     if (!outputWasActive) {
       const listeningDecision = this.interruptionCandidate.observeTranscript(completedTurn);
+      listeningAcknowledgement = listeningDecision.classification === 'acknowledgement';
       if (listeningDecision.classification === 'explicit_stop'
         && isPauseOnlyUtterance(completedTurn, listeningDecision.matchedTrigger)) {
         this.log.info({
@@ -1455,6 +1462,16 @@ export class RealtimeConversationOrchestrator {
       this.customerUtterance.reset();
       this.#armInactivity();
       return;
+    }
+    const pendingBeforeTurn = this.liveCallMemory?.snapshot?.()?.pendingQuestion ?? null;
+    const acknowledgedPendingQuestion = listeningAcknowledgement && Boolean(pendingBeforeTurn);
+    if (acknowledgedPendingQuestion) {
+      this.log.info({
+        stage: 'conversation.pending_question_acknowledged',
+        callId: this.call.id,
+        pendingQuestionKey: typeof pendingBeforeTurn === 'object'
+          ? pendingBeforeTurn.key ?? null : pendingBeforeTurn,
+      }, 'Configured acknowledgement will be resolved with the saved pending question');
     }
     const action = await this.controller.receiveFinalTranscript(validation.text);
     this.#scheduleLiveSummary();
@@ -1535,6 +1552,9 @@ export class RealtimeConversationOrchestrator {
         ? Math.max(0, Date.now() - this.activeCustomerSpeechStartedAt) : null,
       sttFinalizationMs: this.lastSpeechEndedAt
         ? Math.max(0, (finalEventReceivedAt ?? Date.now()) - this.lastSpeechEndedAt) : null,
+      acknowledgedPendingQuestion,
+      acknowledgedPendingQuestionIdentity: acknowledgedPendingQuestion
+        ? pendingQuestionIdentity(pendingBeforeTurn) : null,
     }));
   }
 
@@ -3054,7 +3074,12 @@ export class RealtimeConversationOrchestrator {
       && Boolean(engineDecision?.response?.text);
 
     const operationalKnowledgeFailure = knowledge.tenantEvidence?.diagnostic ?? null;
+    const noVerifiedEvidence = knowledge.tenantEvidence?.found !== true;
+    if (!noVerifiedEvidence && !operationalKnowledgeFailure) {
+      this.lastConfiguredFallbackSpeechIdentity = null;
+    }
     if (operationalKnowledgeFailure) {
+      this.lastConfiguredFallbackSpeechIdentity = null;
       response = {
         cancelled: false,
         text: configuredOperationalFailureResponse(this.runtimeProfile, knowledge),
@@ -3075,6 +3100,51 @@ export class RealtimeConversationOrchestrator {
         turnEpoch: epoch,
         diagnostic: operationalKnowledgeFailure,
       }, 'Grounded LLM invocation skipped because authoritative evidence was incomplete');
+    } else if (noVerifiedEvidence) {
+      const unavailableResponse = configuredInformationUnavailableResponse(
+        this.runtimeProfile, knowledge,
+      );
+      if (!unavailableResponse) {
+        throw new AppError(503,
+          'The active agent has no tenant-configured information-unavailable speech',
+          'VOICE_INFORMATION_UNAVAILABLE_RESPONSE_UNCONFIGURED', {
+            stage: 'operational_response_configuration', operationalFailure: true,
+          });
+      }
+      const clarificationResponse = resolveRuntimeMessage(
+        this.runtimeProfile, 'clarification', knowledge, clarificationVariables(knowledge),
+      );
+      const selectedResponse = selectConfiguredNoEvidenceResponse({
+        unavailableResponse,
+        clarificationResponse,
+        previousSpeechIdentity: this.lastConfiguredFallbackSpeechIdentity,
+      });
+      const configuredResponseRole = selectedResponse.role;
+      const configuredResponse = selectedResponse.text;
+      this.lastConfiguredFallbackSpeechIdentity = selectedResponse.identity;
+      response = {
+        cancelled: false,
+        text: configuredResponse,
+        toolCalls: [],
+        configuredResponseRole,
+        sources: [createMessageSource(messageSourceTypes.RUNTIME_FALLBACK, {
+          label: selectedResponse.repeated
+            ? 'Configured repeated no-evidence clarification'
+            : 'Configured information unavailable response',
+          metadata: { reason: 'verified_evidence_missing' },
+        })],
+      };
+      turnLatency.fastKnowledge = true;
+      turnLatency.route = 'no_verified_evidence';
+      latencyTracker.setKnownAnswer(true);
+      latencyTracker.setResponseClass(configuredResponseRole);
+      this.log.info({
+        stage: 'knowledge.zero_evidence_response_selected',
+        callId: this.call.id,
+        turnEpoch: epoch,
+        configuredResponseRole,
+        repeated: selectedResponse.repeated,
+      }, 'Grounded LLM invocation skipped because no verified evidence was available');
     } else if (deterministicPriority) {
       // Emergency and call-control are protocol-level exceptions. Every other
       // finalized caller turn, including known knowledge, tools and ambiguity,
@@ -3398,6 +3468,29 @@ export class RealtimeConversationOrchestrator {
       || sentencePipeline.completedText()
       || this.#fitTtsMessage(finalAnswer);
     await this.controller.setAssistantResponse(answer, Date.now(), { sources: factualAnswerSources });
+    if (sttTiming.acknowledgedPendingQuestion) {
+      const currentPending = this.liveCallMemory?.snapshot?.()?.pendingQuestion ?? null;
+      if (pendingQuestionIdentity(currentPending)
+        === sttTiming.acknowledgedPendingQuestionIdentity) {
+        this.liveCallMemory?.setPendingQuestion?.(null);
+      }
+    }
+    if (response.configuredResponseRole) {
+      const pending = seedConfiguredQuestion(
+        this.liveCallMemory,
+        answer,
+        `configured_${response.configuredResponseRole}_question`,
+      );
+      if (pending) {
+        this.log.info({
+          stage: 'conversation.configured_response_question_seeded',
+          callId: this.call.id,
+          configuredResponseRole: response.configuredResponseRole,
+          pendingQuestionKey: pending.key,
+        }, 'Configured caller-facing question was stored for the next acknowledgement');
+      }
+      this.#scheduleLiveMemoryCheckpoint('configured_response_question');
+    }
     sentencePipeline.markTranscriptCommitted();
     if (this.#isStaleGeneration(epoch) || this.controller.state !== callStates.SPEAKING) return;
     await this.controller.playbackComplete();
