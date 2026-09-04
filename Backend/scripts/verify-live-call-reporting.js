@@ -21,6 +21,9 @@ assert.match(queryClient, /['"]\/calls['"]/);
 assert.match(queryClient, /['"]\/dashboard['"]/);
 assert.match(apiClient, /isLiveApiPath\(path\)\) requestInit\.cache = ['"]no-store['"]/);
 assert.match(callService, /fromNumber:\s*row\.from_number,\s*toNumber:\s*row\.to_number/);
+assert.match(callService, /COALESCE\(o\.name, t\.name\) AS company_name/);
+assert.match(callService, /JOIN tenants t ON t\.id = c\.tenant_id/);
+assert.match(callService, /LEFT JOIN organizations o ON o\.tenant_id = c\.tenant_id/);
 assert.match(callSessionStore, /input\.call\.from,\s*\n\s*input\.call\.to/);
 assert.match(reportsView, /call\.direction === ['"]inbound['"] \? call\.fromNumber : call\.toNumber/);
 assert.match(reportsView, />\{call\.fromNumber\}<\/td>/);
@@ -43,6 +46,7 @@ console.log(JSON.stringify({
   liveCallResponsesNotCached: true,
   frontendLiveQueriesBypassCache: true,
   phoneNumbersPersistedAndDisplayed: true,
+  callsVisibleWithoutOrganizationRow: true,
   browserWebSocketUpgradeConfigured: true,
   browserWebSocketUsesDirectApiOrigin: true,
 }));

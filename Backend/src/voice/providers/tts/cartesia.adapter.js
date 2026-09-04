@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { AppError } from '../../../middleware/errors.js';
+import { normalizeProviderModelKey } from '../../../providers/provider-model-key.js';
 import { audioDurationMs } from '../../audio/audio-format.js';
 import {
   createTtsRequestState, firstPronunciationDictionary, parameter, parseSse,
@@ -25,6 +26,7 @@ function outputFormat(format) {
 
 export function resolveCartesiaTtsConfiguration(providerConfig) {
   const common = resolveCommonTtsConfiguration(providerConfig);
+  const model = normalizeProviderModelKey(providerConfig, common.model || 'sonic-3.5', { statusCode: 409 });
   const apiKey = parameter(providerConfig.parameters, 'CARTESIA_API_KEY', 'X_API_KEY', 'API_KEY');
   const accessToken = parameter(providerConfig.parameters, 'CARTESIA_ACCESS_TOKEN', 'ACCESS_TOKEN');
   if (!apiKey && !accessToken) throw new AppError(503, 'Selected Cartesia TTS provider has no credential', 'TTS_API_KEY_MISSING');
@@ -34,7 +36,15 @@ export function resolveCartesiaTtsConfiguration(providerConfig) {
       'CARTESIA_PRONUNCIATION_DICTIONARY_ID', 'PRONUNCIATION_DICTIONARY_ID', 'DICTIONARY_ID');
     return id ? { id, versionId: null, lexiconUri: null } : null;
   })();
-  return Object.freeze({ ...common, endpoint: endpoint(providerConfig.baseUrl), apiKey, accessToken, version, dictionary });
+  return Object.freeze({
+    ...common,
+    model,
+    endpoint: endpoint(providerConfig.baseUrl),
+    apiKey,
+    accessToken,
+    version,
+    dictionary,
+  });
 }
 
 export function createCartesiaTtsAdapter({ providerConfig, runtimeContext = {} }) {
@@ -56,7 +66,7 @@ export function createCartesiaTtsAdapter({ providerConfig, runtimeContext = {} }
         else headers['X-API-Key'] = configuration.apiKey;
         const effectiveVoiceId = configuration.voiceId ? configuration.voiceId : 'fb7d8d97-9730-4165-bd79-36b5ce61b5f2';
         const body = {
-          model_id: configuration.model || 'sonic-3.5',
+          model_id: configuration.model,
           transcript: synthesis.text,
           voice: { mode: 'id', id: effectiveVoiceId },
           context_id: randomUUID(),

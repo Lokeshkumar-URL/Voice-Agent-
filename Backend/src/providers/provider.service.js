@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { withPlatformAdminContext, withTenantContext } from '../infrastructure/database-context.js';
 import { AppError } from '../middleware/errors.js';
+import { normalizeProviderModelKey } from './provider-model-key.js';
 import { decryptCredential } from '../security/credential-crypto.js';
 
 function slugify(value) {
@@ -220,20 +221,21 @@ export function deleteProvider(actorUserId, providerId) {
 
 export function createProviderModel(actorUserId, providerId, input) {
   return withPlatformAdminContext(actorUserId, async (client) => {
-    await providerRow(client, providerId);
+    const provider = await providerRow(client, providerId);
+    const modelKey = normalizeProviderModelKey(provider, input.modelKey);
     try {
       const result = await client.query(
         `INSERT INTO provider_models
           (provider_id, model_key, display_name, status, capabilities, settings, created_by)
          VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7)
          RETURNING *, NULL::text AS provider_name, NULL::ai_provider_type AS provider_type`,
-        [providerId, input.modelKey, input.displayName, input.status,
+        [providerId, modelKey, input.displayName, input.status,
           JSON.stringify(input.capabilities), JSON.stringify(input.settings), actorUserId],
       );
       await client.query(
         `INSERT INTO audit_logs (actor_user_id, actor_type, action, entity_type, entity_id, after_data)
          VALUES ($1, 'user', 'PROVIDER_MODEL_CREATED', 'provider_model', $2, $3::jsonb)`,
-        [actorUserId, result.rows[0].id, JSON.stringify({ providerId, modelKey: input.modelKey })],
+        [actorUserId, result.rows[0].id, JSON.stringify({ providerId, modelKey })],
       );
       return mapModel(result.rows[0]);
     } catch (error) {
@@ -277,6 +279,8 @@ export function updateProviderModel(actorUserId, modelId, input) {
     );
     if (!before.rowCount) throw new AppError(404, 'Provider model was not found', 'PROVIDER_MODEL_NOT_FOUND');
     const current = before.rows[0];
+    const provider = await providerRow(client, current.provider_id);
+    const modelKey = normalizeProviderModelKey(provider, input.modelKey ?? current.model_key);
     try {
       const result = await client.query(
         `UPDATE provider_models
@@ -286,7 +290,7 @@ export function updateProviderModel(actorUserId, modelId, input) {
           RETURNING *, NULL::text AS provider_name, NULL::ai_provider_type AS provider_type`,
         [
           modelId,
-          input.modelKey ?? current.model_key,
+          modelKey,
           input.displayName ?? current.display_name,
           input.status ?? current.status,
           JSON.stringify(input.capabilities ?? current.capabilities ?? {}),

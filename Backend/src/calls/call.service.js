@@ -81,7 +81,7 @@ function mapCall(row, includeTranscript = false) {
   return call;
 }
 
-const callSelect = `SELECT c.*, o.name AS company_name,
+const callSelect = `SELECT c.*, COALESCE(o.name, t.name) AS company_name,
   s.id ai_summary_id,s.status::text ai_summary_status,s.summary_text ai_summary_text,
   s.outcome ai_summary_outcome,s.customer_intent ai_customer_intent,
   s.sentiment ai_summary_sentiment,s.collected_data ai_collected_data,
@@ -91,7 +91,9 @@ const callSelect = `SELECT c.*, o.name AS company_name,
   CASE WHEN c.status IN ('queued', 'ringing', 'connected')
     THEN GREATEST(c.duration_seconds, floor(extract(epoch FROM (now() - c.started_at)))::int)
     ELSE c.duration_seconds END AS live_duration_seconds
-  FROM call_sessions c JOIN organizations o ON o.tenant_id = c.tenant_id AND o.deleted_at IS NULL
+  FROM call_sessions c
+  JOIN tenants t ON t.id = c.tenant_id
+  LEFT JOIN organizations o ON o.tenant_id = c.tenant_id AND o.deleted_at IS NULL
   LEFT JOIN call_ai_summaries s ON s.call_session_id=c.id AND s.tenant_id=c.tenant_id`;
 
 function contextFor(auth, operation) {

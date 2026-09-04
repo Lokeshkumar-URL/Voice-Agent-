@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 import { env } from '../../../config/env.js';
 import { AppError } from '../../../middleware/errors.js';
+import { normalizeProviderModelKey } from '../../../providers/provider-model-key.js';
 import { audioDurationMs, resolveModelAudioFormat } from '../../audio/audio-format.js';
 import { SttEventChannel } from './stt.interface.js';
 
@@ -96,9 +97,10 @@ export function resolveSarvamSttConfiguration(providerConfig) {
   // Sarvam uses input_audio_codec on the WebSocket URL to describe raw PCM.
   // The per-message schema still requires its MIME-style encoding discriminator.
   const messageEncoding = 'audio/wav';
+  const model = normalizeProviderModelKey(providerConfig, providerConfig.modelKey, { statusCode: 409 });
   const query = {
     'language-code': language,
-    model: providerConfig.modelKey,
+    model,
     mode,
     sample_rate: audioFormat.sampleRate,
     input_audio_codec: inputAudioCodec,

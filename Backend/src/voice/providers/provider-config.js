@@ -35,6 +35,7 @@ function provider(row, prefix, decrypt, runtimeSettings = {}) {
   const parameters = parameterMap(row[`${prefix}_parameters`], decrypt);
   return {
     providerId: row[`${prefix}_provider_id`],
+    providerType: prefix,
     providerName: row[`${prefix}_provider_name`],
     providerSlug: row[`${prefix}_provider_slug`],
     baseUrl: row[`${prefix}_base_url`],
