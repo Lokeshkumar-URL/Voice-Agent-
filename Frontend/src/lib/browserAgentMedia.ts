@@ -17,6 +17,8 @@ const isRemoteHost = isBrowser && window.location.hostname !== 'localhost' && wi
 const defaultApiBaseUrl = (isRemoteHost || !runtimeEnvironment?.VITE_API_BASE_URL
   ? (isBrowser ? `${window.location.origin}/api` : 'http://localhost:1112')
   : runtimeEnvironment.VITE_API_BASE_URL).replace(/\/$/, '');
+const defaultMediaBaseUrl = (runtimeEnvironment?.VITE_BROWSER_MEDIA_BASE_URL
+  || defaultApiBaseUrl).replace(/\/$/, '');
 
 function bytesToBase64(bytes: Uint8Array) {
   let value = '';
@@ -106,7 +108,7 @@ export class BrowserAgentMediaClient extends EventTarget {
     this.dispatchEvent(new CustomEvent('state', { detail: { state, ...detail } }));
   }
 
-  async connect(session: BrowserTestSessionContract, apiBaseUrl = defaultApiBaseUrl) {
+  async connect(session: BrowserTestSessionContract, apiBaseUrl = defaultMediaBaseUrl) {
     if (this.state !== 'idle' && this.state !== 'closed' && this.state !== 'failed') {
       throw new Error('Browser agent media is already active');
     }

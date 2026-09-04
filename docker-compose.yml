@@ -54,6 +54,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: /api
+        VITE_BROWSER_MEDIA_BASE_URL: https://api.zvoice.zeacrm.com
     ports:
       - "5020:80"
     depends_on:

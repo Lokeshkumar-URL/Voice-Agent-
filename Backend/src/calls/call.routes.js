@@ -13,8 +13,18 @@ function valid(schema, value) {
   return parsed.data;
 }
 
+function disableCallCaching(_request, response, next) {
+  response.set({
+    'Cache-Control': 'private, no-store, no-cache, max-age=0, must-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+  });
+  next();
+}
+
 export const callAdminRouter = Router();
 callAdminRouter.use(authenticateRequest, requireRoles('SUPER_ADMIN'));
+callAdminRouter.use(disableCallCaching);
 callAdminRouter.get('/', async (req, res) => res.json({ success: true, data: await listCalls(req.auth, valid(listCallsSchema, req.query)) }));
 callAdminRouter.get('/:callId', async (req, res) => {
   const { callId } = valid(callIdSchema, req.params);
@@ -39,6 +49,7 @@ callAdminRouter.post('/:callId/hangup', async (req, res) => {
 
 export const tenantCallRouter = Router();
 tenantCallRouter.use(authenticateRequest, requireTenantContext);
+tenantCallRouter.use(disableCallCaching);
 tenantCallRouter.get('/runtime/provider-health', async (req, res) => res.json({
   success: true,
   data: tenantProviderHealth.snapshot(req.tenant.tenantId),
