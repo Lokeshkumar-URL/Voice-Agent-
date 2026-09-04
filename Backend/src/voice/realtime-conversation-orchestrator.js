@@ -190,6 +190,7 @@ export function llmOperationalFailureClass(error) {
   if (code === 'LLM_GROUNDED_INITIALIZATION_FAILED'
     || code === 'LLM_GROUNDED_INPUT_INVALID'
     || code === 'LLM_GROUNDED_STREAM_INVALID') return 'initialization';
+  if (code === 'LLM_GROUNDED_OUTPUT_INVALID') return 'output_validation';
   if (code.startsWith('LLM_STRUCTURED_OUTPUT_')) return 'structured_output';
   return 'provider_failure';
 }
@@ -2437,6 +2438,8 @@ export class RealtimeConversationOrchestrator {
           normalTurnOutput = createGroundedLlmOutput(groundedLlmOutputTypes.RESPONSE, {
             text: answer,
             selectedEvidenceIds,
+            approvedInformationUnavailableResponse:
+              grounded.approvedInformationUnavailableResponse === true,
           });
         }
       }
@@ -3149,10 +3152,13 @@ export class RealtimeConversationOrchestrator {
       } catch (error) {
 
         const operationalFailure = llmOperationalFailureClass(error);
-        this.#recordProviderFailure('llm', error, 'llm.response');
-        this.providerHealth.record(this.runtimeProfile.agent.tenantId, 'llm', this.runtimeProfile.providers.llm, 'failure', {
-          code: error.code,
-        });
+        const providerFailed = operationalFailure !== 'output_validation';
+        if (providerFailed) {
+          this.#recordProviderFailure('llm', error, 'llm.response');
+          this.providerHealth.record(this.runtimeProfile.agent.tenantId, 'llm', this.runtimeProfile.providers.llm, 'failure', {
+            code: error.code,
+          });
+        }
         this.log.warn({
           stage: 'llm.safe_recovery_fallback', code: error.code,
           operationalFailure,
@@ -3161,14 +3167,22 @@ export class RealtimeConversationOrchestrator {
           errorName: String(error?.details?.errorName ?? error?.name ?? 'Error').slice(0, 120),
           errorMessage: String(error?.details?.errorMessage ?? error?.message ?? '').slice(0, 1_000),
           errorStack: String(error?.cause?.stack ?? error?.stack ?? '').slice(0, 4_000),
-        }, 'Selected LLM failed operationally; using the technical fallback response');
+        }, providerFailed
+          ? 'Selected LLM failed operationally; using the technical fallback response'
+          : 'Grounded LLM output failed local validation; using the configured validation response');
         response = {
           cancelled: false,
-          text: configuredTechnicalFailureResponse(this.runtimeProfile, knowledge),
+          text: providerFailed
+            ? configuredTechnicalFailureResponse(this.runtimeProfile, knowledge)
+            : configuredOperationalFailureResponse(
+              this.runtimeProfile, knowledge, { validation: true },
+            ),
           operationalFailureReason: error.code ?? 'LLM_PROVIDER_FAILURE',
           toolCalls: [],
           sources: [createMessageSource(messageSourceTypes.RUNTIME_FALLBACK, {
-            label: 'LLM operational technical fallback', metadata: {
+            label: providerFailed
+              ? 'LLM operational technical fallback'
+              : 'Grounded output validation fallback', metadata: {
               reason: error.code, operationalFailure, ambiguity: false,
             },
           })],

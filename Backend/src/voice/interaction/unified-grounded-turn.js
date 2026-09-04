@@ -975,6 +975,9 @@ export function applyUnifiedGroundedTurn({
     pendingQuestion: afterState.pendingQuestion,
     nextQuestion: effectiveNextQuestion,
     clarificationRecovery: recovery,
+    approvedInformationUnavailableResponse:
+      effectiveDecision.approvedZeroEvidenceResponse === true
+      || effectiveDecision.approvedConfiguredUnavailableResponse === true,
     toolRequest: awaitingConfirmation ? null : effectiveDecision.toolRequest,
     state: afterState,
   });

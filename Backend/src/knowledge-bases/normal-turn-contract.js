@@ -297,6 +297,8 @@ export function createGroundedLlmOutput(type, value = {}) {
   const selectedEvidenceIds = Object.freeze([...new Set((value.selectedEvidenceIds ?? [])
     .map((id) => clean(id, 160)).filter(Boolean))]);
   const text = clean(value.text, 4_000) || null;
+  const approvedInformationUnavailableResponse = type === groundedLlmOutputTypes.RESPONSE
+    && value.approvedInformationUnavailableResponse === true;
   const tool = type === groundedLlmOutputTypes.TOOL && value.tool
     ? Object.freeze({
       name: required(value.tool.name, 'tool name'),
@@ -305,8 +307,14 @@ export function createGroundedLlmOutput(type, value = {}) {
       ),
       input: toolFields(value.tool.input),
     }) : null;
-  if (type === groundedLlmOutputTypes.RESPONSE && (!text || !selectedEvidenceIds.length)) {
-    throw new TypeError('RESPONSE requires caller-facing text and selected evidence');
+  if (type === groundedLlmOutputTypes.RESPONSE
+    && (!text || (!selectedEvidenceIds.length && !approvedInformationUnavailableResponse))) {
+    const error = new TypeError(
+      'RESPONSE requires caller-facing text and selected evidence, or an approved information-unavailable response',
+    );
+    error.code = 'LLM_GROUNDED_OUTPUT_INVALID';
+    error.details = { stage: 'grounded_output_validation' };
+    throw error;
   }
   if (type === groundedLlmOutputTypes.TOOL && !tool) {
     throw new TypeError('TOOL requires an authorized tool request');
@@ -320,6 +328,7 @@ export function createGroundedLlmOutput(type, value = {}) {
     type,
     text,
     selectedEvidenceIds,
+    approvedInformationUnavailableResponse,
     tool,
   });
 }
