@@ -1719,6 +1719,7 @@ export class RealtimeConversationOrchestrator {
         memory: memoryState,
         abortSignal,
       });
+      const engineInput = toKnowledgeEngineInput(normalTurnInput);
       if (this.dependencies.routeKnowledge) {
         const legacyResult = await this.dependencies.routeKnowledge(auth, { query });
         const rawSources = legacyResult.tenantEvidence?.sources ?? legacyResult.sources ?? (legacyResult.content ? [{
@@ -1793,7 +1794,7 @@ export class RealtimeConversationOrchestrator {
       // Retrieval and PostgreSQL hydration form one authoritative operation.
       // Their production completion deadlines decide genuine failures; the
       // retrieval SLO is observability only and cannot discard late evidence.
-      const tenantEvidence = await retrieveEvidence(auth, normalTurnInput, {
+      const tenantEvidence = await retrieveEvidence(auth, engineInput, {
           runtimeProfile: this.runtimeProfile,
           tracker: this.turnLatencyTrackers?.get(this.epoch),
           cancelRetrieval: () => this.activeRetrievalAbortController?.abort('retrieval_timeout'),

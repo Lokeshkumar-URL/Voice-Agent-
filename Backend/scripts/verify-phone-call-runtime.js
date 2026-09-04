@@ -8,8 +8,9 @@ const orchestrator = await readFile(
 const voiceRoutes = await readFile(new URL('../src/voice/voice.routes.js', import.meta.url), 'utf8');
 const proxy = await readFile(new URL('../../docs/production-openresty-websocket.conf', import.meta.url), 'utf8');
 
-assert.match(orchestrator, /retrieveEvidence\(auth, normalTurnInput,/);
-assert.doesNotMatch(orchestrator, /retrieveEvidence\(auth, engineInput,/);
+assert.match(orchestrator, /const engineInput = toKnowledgeEngineInput\(normalTurnInput\);/);
+assert.match(orchestrator, /retrieveEvidence\(auth, engineInput,/);
+assert.doesNotMatch(orchestrator, /retrieveEvidence\(auth, normalTurnInput,/);
 assert.match(voiceRoutes, /voiceRouter\.post\(['"]\/answer['"]/);
 assert.match(voiceRoutes, /createVoiceCallSession\(\{ call, runtimeProfile \}\)/);
 assert.match(voiceRoutes, /returning Plivo stream XML/);
@@ -21,5 +22,5 @@ console.log(JSON.stringify({
   phoneAnswerWebhookProxied: true,
   phoneSessionCreationConnected: true,
   plivoMediaWebSocketProxied: true,
-  retrievalReferenceErrorFixed: true,
+  retrievalInputContractConverted: true,
 }));
