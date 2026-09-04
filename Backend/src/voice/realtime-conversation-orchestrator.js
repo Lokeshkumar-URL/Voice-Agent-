@@ -371,6 +371,7 @@ export class RealtimeConversationOrchestrator {
     this.activeCancellationPromise = null;
     this.activeAssistantPlayback = null;
     this.inactivityTimer = null;
+    this.knowledgeReadinessPromise = null;
     this.activeGroundedTurnEpochs = new Set();
     this.callDurationTimer = null;
     this.listeners = [];
@@ -552,24 +553,46 @@ export class RealtimeConversationOrchestrator {
         usageDirection: this.call.direction,
         language: languageCode(this.runtimeProfile.agent.language),
       });
-      const readiness = await ensureKnowledgeReady({
+      const readinessPromise = Promise.resolve().then(() => ensureKnowledgeReady({
         tenantId: this.runtimeProfile.agent.tenantId,
         workspaceId: this.runtimeProfile.agent.workspaceId,
         userId: null,
         role: 'COMPANY_DEVELOPER',
-      }, readinessInput, this.dependencies.knowledgeReadinessDependencies ?? {});
-      this.log.info({
-        stage: 'knowledge.publication_ready',
-        callId: this.call.id,
-        attempts: readiness?.readiness?.attempts ?? 1,
-        waitedMs: readiness?.readiness?.waitedMs ?? 0,
-        artifactCount: readiness?.readiness?.artifactCount ?? 0,
-        indexVersion: readiness?.readiness?.indexVersion ?? null,
-        publicationRevisions: (readiness?.publications ?? []).map((publication) => ({
-          knowledgeBaseId: publication.knowledgeBaseId,
-          publicationRevision: publication.publicationRevision,
-        })),
-      }, 'All assigned knowledge publication artifacts are ready before call startup');
+      }, readinessInput, this.dependencies.knowledgeReadinessDependencies ?? {}));
+      this.knowledgeReadinessPromise = readinessPromise;
+      void readinessPromise.then((readiness) => {
+        this.runtimeMetrics.knowledgeReadiness = {
+          ready: true,
+          attempts: readiness?.readiness?.attempts ?? 1,
+          waitedMs: readiness?.readiness?.waitedMs ?? 0,
+          errorCode: null,
+        };
+        this.log.info({
+          stage: 'knowledge.publication_ready',
+          callId: this.call.id,
+          attempts: readiness?.readiness?.attempts ?? 1,
+          waitedMs: readiness?.readiness?.waitedMs ?? 0,
+          artifactCount: readiness?.readiness?.artifactCount ?? 0,
+          indexVersion: readiness?.readiness?.indexVersion ?? null,
+          publicationRevisions: (readiness?.publications ?? []).map((publication) => ({
+            knowledgeBaseId: publication.knowledgeBaseId,
+            publicationRevision: publication.publicationRevision,
+          })),
+        }, 'Assigned knowledge publication artifacts are ready');
+      }).catch((error) => {
+        this.runtimeMetrics.knowledgeReadiness = {
+          ready: false,
+          attempts: null,
+          waitedMs: null,
+          errorCode: error?.code ?? 'KNOWLEDGE_INDEX_UNAVAILABLE',
+        };
+        this.log.error({
+          err: error,
+          stage: 'knowledge.publication_degraded',
+          callId: this.call.id,
+          errorCode: error?.code ?? 'KNOWLEDGE_INDEX_UNAVAILABLE',
+        }, 'Knowledge publication recovery is pending; voice runtime will continue safely');
+      });
     }
     this.preCallContext = this.call.providerMetadata?.preCall?.context ?? {};
     const ttsTemplateContext = welcomeTemplateContext(this.call);

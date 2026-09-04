@@ -250,7 +250,7 @@ export async function completeVoiceCallWithoutRuntime(input, dependencies = {}) 
     return { call: updated, billing, idempotent: false };
   });
   activeCallSessions.delete(input.callId);
-  if (!persisted.idempotent && status === 'completed') {
+  if (!persisted.idempotent) {
     await (dependencies.queuePostCallSummary ?? queuePostCallSummary)(input.callId, dependencies)
       .catch((error) => logger.warn({
         stage: 'postcall_summary.degraded_finalization_deferred', callId: input.callId,

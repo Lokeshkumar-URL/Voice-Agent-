@@ -20,6 +20,8 @@ import { enqueueKnowledgeProcessingJob } from '../knowledge-bases/knowledge-proc
 export const KNOWLEDGE_ENGINE_RUNTIME_VERSION = 1;
 
 const activePublicationSql = `
+  /* A published assignment remains eligible when its cache/index job is
+     missing so the runtime can discover it and enqueue artifact recovery. */
   SELECT kb.id AS knowledge_base_id, kb.publication_revision, assignment.priority
     FROM voice_agents agent
     JOIN agent_knowledge_bases assignment
@@ -32,12 +34,6 @@ const activePublicationSql = `
      AND (agent.usage_direction='both' OR agent.usage_direction=$3::agent_usage_direction)
      AND (assignment.usage_direction='both' OR assignment.usage_direction=$3::agent_usage_direction)
      AND (kb.usage_direction='both' OR kb.usage_direction=$3::agent_usage_direction)
-     AND EXISTS (
-       SELECT 1 FROM knowledge_processing_jobs job
-        WHERE job.tenant_id=kb.tenant_id AND job.knowledge_base_id=kb.id
-          AND job.job_type='index' AND job.status='completed'
-          AND job.metadata->>'publicationRevision'=kb.publication_revision::text
-     )
    ORDER BY assignment.priority,kb.id`;
 
 const defaults = Object.freeze({

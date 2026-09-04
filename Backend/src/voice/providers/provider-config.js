@@ -289,13 +289,6 @@ export function loadAgentRuntimeProfile(resolvedAgent, dependencies = {}) {
            WHERE akb.tenant_id=a.tenant_id AND akb.agent_id=a.id
              AND kb.status = 'published'
              AND kb.publication_revision>0 AND kb.deleted_at IS NULL
-             AND EXISTS (
-               SELECT 1 FROM knowledge_processing_jobs active_index
-                WHERE active_index.tenant_id=kb.tenant_id
-                  AND active_index.knowledge_base_id=kb.id
-                  AND active_index.job_type='index' AND active_index.status='completed'
-                  AND active_index.metadata->>'publicationRevision'=kb.publication_revision::text
-             )
              AND ($4::agent_usage_direction IS NULL
                OR akb.usage_direction='both' OR akb.usage_direction=$4::agent_usage_direction)
              AND ($4::agent_usage_direction IS NULL

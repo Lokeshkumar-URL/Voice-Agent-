@@ -42,4 +42,44 @@ assert.equal(call.provider_metadata.voiceRuntime.degradedFinalization, true);
 assert.equal(billingInput.durationSeconds, 38);
 assert.equal(summaryQueued, true);
 
+const failedCall = {
+  ...call,
+  id: 'call-knowledge-unavailable',
+  ended_at: null,
+  status: 'connected',
+  provider_metadata: {},
+};
+let failedSummaryQueued = false;
+await completeVoiceCallWithoutRuntime({
+  callId: failedCall.id,
+  outcome: 'failed',
+  reason: 'KNOWLEDGE_PUBLICATION_RECOVERY_TIMEOUT',
+  endedAt: new Date(40_000),
+}, {
+  contextRunner: async (operation) => operation({
+    query: async (sql, values) => {
+      if (sql.startsWith('SELECT * FROM call_sessions')) {
+        return { rowCount: 1, rows: [failedCall] };
+      }
+      if (sql.startsWith('UPDATE call_sessions')) {
+        Object.assign(failedCall, {
+          status: values[1], ended_at: values[2], duration_seconds: values[3],
+          provider_metadata: { ...failedCall.provider_metadata, ...JSON.parse(values[4]) },
+        });
+        return { rowCount: 1, rows: [failedCall] };
+      }
+      throw new Error(`Unexpected SQL: ${sql}`);
+    },
+  }),
+  finalizeCreditBilling: async () => ({ creditsCharged: 0 }),
+  queuePostCallSummary: async () => {
+    failedSummaryQueued = true;
+    return { queued: true };
+  },
+});
+
+assert.equal(failedCall.status, 'failed');
+assert.equal(failedCall.provider_metadata.voiceRuntime.finalized, true);
+assert.equal(failedSummaryQueued, true);
+
 console.log('Pre-runtime media-close terminal fallback verified successfully.');
