@@ -40,6 +40,8 @@ for (const source of [frontendProxy, publicProxy]) {
   assert.match(source, /proxy_buffering off/);
 }
 assert.match(publicProxy, /location = \/voice\/browser-test\/media/);
+assert.match(publicProxy, /location \/webhooks\/plivo\/ \{/);
+assert.match(publicProxy, /proxy_pass http:\/\/127\.0\.0\.1:1112/);
 
 console.log(JSON.stringify({
   success: true,

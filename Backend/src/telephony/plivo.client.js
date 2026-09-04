@@ -83,6 +83,27 @@ export function createPlivoApplication(authId, authToken, input, fetchImpl = fet
   }, fetchImpl, baseUrl, 'create-application');
 }
 
+export function updatePlivoApplication(authId, authToken, applicationId, input,
+  fetchImpl = fetch, baseUrl = env.PLIVO_API_BASE_URL) {
+  return plivoRequest(
+    authId,
+    authToken,
+    `/Account/${encodeURIComponent(authId)}/Application/${encodeURIComponent(applicationId)}/`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        answer_url: input.answerUrl,
+        answer_method: 'POST',
+        hangup_url: input.hangupUrl,
+        hangup_method: 'POST',
+      }),
+    },
+    fetchImpl,
+    baseUrl,
+    'update-application',
+  );
+}
+
 export function updatePlivoNumber(authId, authToken, number, input, fetchImpl = fetch, baseUrl = env.PLIVO_API_BASE_URL) {
   const body = {};
   if ('subaccountAuthId' in input) body.subaccount = input.subaccountAuthId;

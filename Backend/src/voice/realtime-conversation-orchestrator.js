@@ -1793,7 +1793,7 @@ export class RealtimeConversationOrchestrator {
       // Retrieval and PostgreSQL hydration form one authoritative operation.
       // Their production completion deadlines decide genuine failures; the
       // retrieval SLO is observability only and cannot discard late evidence.
-      const tenantEvidence = await retrieveEvidence(auth, engineInput, {
+      const tenantEvidence = await retrieveEvidence(auth, normalTurnInput, {
           runtimeProfile: this.runtimeProfile,
           tracker: this.turnLatencyTrackers?.get(this.epoch),
           cancelRetrieval: () => this.activeRetrievalAbortController?.abort('retrieval_timeout'),

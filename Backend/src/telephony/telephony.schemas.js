@@ -23,7 +23,7 @@ export const updateTelephonyAccountSchema = z.object({
   authId: plivoMainAuthId.optional(),
   authToken: z.string().min(8).max(1000).optional(),
   baseUrl: z.string().trim().url().max(1000).optional(),
-  applicationId: z.string().trim().min(1).max(240).optional(),
+  applicationId: z.string().trim().max(240).optional(),
   answerUrl: z.string().trim().url().max(1000).optional(),
   hangupUrl: z.string().trim().url().max(1000).optional(),
   recordingCallbackUrl: z.string().trim().url().max(1000).optional(),

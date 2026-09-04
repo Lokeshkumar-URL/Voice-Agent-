@@ -4,7 +4,7 @@ import { AppError } from '../middleware/errors.js';
 import { decryptCredential, encryptCredential } from '../security/credential-crypto.js';
 import {
   createPlivoApplication, createPlivoSubaccount, deletePlivoSubaccount,
-  listPlivoNumbers, updatePlivoNumber,
+  listPlivoNumbers, updatePlivoApplication, updatePlivoNumber,
 } from './plivo.client.js';
 
 function readTelephonyCredential(value) {
@@ -100,12 +100,19 @@ export async function createTelephonyAccount(actorUserId, input) {
   }
 }
 
-export function updateTelephonyAccount(actorUserId, accountId, input) {
+export function updateTelephonyAccount(actorUserId, accountId, input, fetchImpl = fetch) {
   return withPlatformAdminContext(actorUserId, async (client) => {
     const beforeResult = await client.query(
       'SELECT * FROM telephony_accounts WHERE id = $1 AND deleted_at IS NULL', [accountId],
     );
     if (!beforeResult.rowCount) throw new AppError(404, 'Telephony account was not found', 'TELEPHONY_ACCOUNT_NOT_FOUND');
+    const before = beforeResult.rows[0];
+    const answerUrl = input.answerUrl ?? before.answer_url;
+    const hangupUrl = input.hangupUrl ?? before.hangup_url;
+    const recordingCallbackUrl = input.recordingCallbackUrl ?? before.recording_callback_url;
+    const voiceEndpointsChanged = answerUrl !== before.answer_url || hangupUrl !== before.hangup_url;
+    const inheritedEndpointsChanged = voiceEndpointsChanged
+      || recordingCallbackUrl !== before.recording_callback_url;
     const fields = {
       name: 'name', authId: 'auth_id', baseUrl: 'base_url', applicationId: 'application_id',
       answerUrl: 'answer_url', hangupUrl: 'hangup_url', recordingCallbackUrl: 'recording_callback_url',
@@ -119,6 +126,43 @@ export function updateTelephonyAccount(actorUserId, accountId, input) {
       values.push(encryptCredential(input.authToken));
     }
     try {
+      if (before.account_type === 'main' && voiceEndpointsChanged) {
+        const children = await client.query(
+          `SELECT application_id
+             FROM telephony_accounts
+            WHERE parent_account_id = $1
+              AND account_type = 'subaccount'
+              AND deleted_at IS NULL
+              AND application_id <> ''`,
+          [accountId],
+        );
+        const applicationIds = new Set(children.rows.map((row) => row.application_id));
+        const mainApplicationId = input.applicationId ?? before.application_id;
+        if (mainApplicationId) applicationIds.add(mainApplicationId);
+        const authId = input.authId ?? before.auth_id;
+        const authToken = input.authToken ?? readTelephonyCredential(before.auth_token_encrypted);
+        const baseUrl = input.baseUrl ?? before.base_url;
+        await Promise.all([...applicationIds].map((applicationId) => updatePlivoApplication(
+          authId,
+          authToken,
+          applicationId,
+          { answerUrl, hangupUrl },
+          fetchImpl,
+          baseUrl,
+        )));
+      }
+      if (before.account_type === 'main' && inheritedEndpointsChanged) {
+        await client.query(
+          `UPDATE telephony_accounts
+              SET answer_url = $2,
+                  hangup_url = $3,
+                  recording_callback_url = $4
+            WHERE parent_account_id = $1
+              AND account_type = 'subaccount'
+              AND deleted_at IS NULL`,
+          [accountId, answerUrl, hangupUrl, recordingCallbackUrl],
+        );
+      }
       const result = await client.query(
         `UPDATE telephony_accounts SET ${sets.join(', ')} WHERE id = $1 AND deleted_at IS NULL RETURNING *`,
         [accountId, ...values],
@@ -126,7 +170,7 @@ export function updateTelephonyAccount(actorUserId, accountId, input) {
       await client.query(
         `INSERT INTO audit_logs (actor_user_id, actor_type, action, entity_type, entity_id, before_data, after_data)
          VALUES ($1, 'user', 'TELEPHONY_ACCOUNT_UPDATED', 'telephony_account', $2, $3::jsonb, $4::jsonb)`,
-        [actorUserId, accountId, JSON.stringify(mapAccountAudit(beforeResult.rows[0])), JSON.stringify(mapAccountAudit(result.rows[0]))],
+        [actorUserId, accountId, JSON.stringify(mapAccountAudit(before)), JSON.stringify(mapAccountAudit(result.rows[0]))],
       );
       return mapAccount(result.rows[0]);
     } catch (error) {
