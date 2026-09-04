@@ -83,6 +83,7 @@ import { LiveMemoryMaintenanceQueue } from './interaction/live-memory-maintenanc
 import { resolveCallbackConfiguration } from './interaction/callback-config.js';
 import { mergeToolFieldSchemas } from './interaction/tool-field-schema.js';
 import { resolveRuntimeMessage } from './interaction/configured-runtime-messages.js';
+import { normalizeTranscript } from './interaction/phonetic-normalizer.js';
 import {
   isInternalRuntimeText,
   runtimeMessageIdentity,
@@ -1228,6 +1229,10 @@ export class RealtimeConversationOrchestrator {
   }
 
   async #handleSttEvent(event) {
+    if (event.text) {
+      const callLanguage = this.liveCallMemory?.snapshot()?.language ?? this.runtimeProfile?.agent?.language;
+      event.text = normalizeTranscript(event.text, callLanguage);
+    }
     const finalEventReceivedAt = event.type === 'final_transcript' ? Date.now() : null;
     const eventPolicy = sttEventPolicy(event.type);
     if (this.finalized) return;
