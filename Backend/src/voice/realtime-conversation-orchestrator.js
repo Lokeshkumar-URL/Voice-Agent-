@@ -1228,10 +1228,11 @@ export class RealtimeConversationOrchestrator {
     }
   }
 
-  async #handleSttEvent(event) {
+  async #handleSttEvent(incomingEvent) {
+    let event = incomingEvent;
     if (event.text) {
       const callLanguage = this.liveCallMemory?.snapshot()?.language ?? this.runtimeProfile?.agent?.language;
-      event.text = normalizeTranscript(event.text, callLanguage);
+      event = { ...event, text: normalizeTranscript(event.text, callLanguage) };
     }
     const finalEventReceivedAt = event.type === 'final_transcript' ? Date.now() : null;
     const eventPolicy = sttEventPolicy(event.type);
