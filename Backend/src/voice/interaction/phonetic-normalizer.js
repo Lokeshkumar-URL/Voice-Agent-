@@ -2,6 +2,7 @@ export const TAMIL_PHONETICS_MAP = {
   "ஜியா சியா ராமோட": "Zea CRM-oda",
   "ஜியா சியா ராம்": "Zea CRM",
   "ஜியா சிஆர்எம்": "Zea CRM",
+  "தியரம்": "Zea CRM",
   "ஜியா ப்ளேனா": "Zea Play-na",
   "ஜியா ப்ளே": "Zea Play",
   "சி வாய்ஸ்னா": "Zea Voice-na",
