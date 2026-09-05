@@ -614,10 +614,31 @@ function parseGeneralKnowledge(extraction) {
   const size = env.RAG_CHUNK_SIZE_TOKENS;
   const overlap = env.RAG_CHUNK_OVERLAP_TOKENS;
   const records = [];
+
+  const domainKeywordEnrichment = [
+    { terms: [/software solutions/i, /software/i, /solutions/i], aliasText: 'Tamil Queries: சாஃப்ட்வேர் சொல்யூஷன்ஸ் | சாஃப்ட்வேர் | சொல்யூஷன்ஸ் | மென்பொருள் தீர்வுகள்' },
+    { terms: [/zea ai/i, /zea brain/i, /zea voice/i, /zeacrm/i, /zea play/i], aliasText: 'Tamil Queries: ஜீ ஏஐ | ஜீ பிரைன் | ஜீ வாய்ஸ் | ஜியா சிஆர்எம் | ஜீ ப்ளே' },
+    { terms: [/services/i, /service/i], aliasText: 'Tamil Queries: சர்வீசஸ் | சேவைகள்' },
+    { terms: [/products/i, /product/i, /ecosystem/i], aliasText: 'Tamil Queries: ப்ராடக்ட்ஸ் | தயாரிப்புகள்' },
+    { terms: [/url factory/i], aliasText: 'Tamil Queries: யுஆர்எல் ஃபேக்டரி' },
+  ];
+
   for (let start = 0; start < words.length; start += size - overlap) {
     const chunkWords = words.slice(start, start + size);
     if (!chunkWords.length) break;
-    records.push({ chunkIndex: records.length, content: chunkWords.join(' '), tokenCount: chunkWords.length });
+    let content = chunkWords.join(' ');
+    
+    const matchedAliases = [];
+    for (const rule of domainKeywordEnrichment) {
+      if (rule.terms.some((term) => term.test(content))) {
+        matchedAliases.push(rule.aliasText);
+      }
+    }
+    if (matchedAliases.length > 0) {
+      content = `${content}\n\n[Search Tags: ${matchedAliases.join(' | ')}]`;
+    }
+
+    records.push({ chunkIndex: records.length, content, tokenCount: chunkWords.length });
     if (start + size >= words.length) break;
   }
   return { records, warnings: [] };

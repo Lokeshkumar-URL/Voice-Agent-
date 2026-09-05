@@ -15,7 +15,7 @@ const queryFields = [
   'positive_speech_threshold', 'negative_speech_threshold', 'min_speech_frames',
   'first_turn_min_speech_frames', 'negative_frames_count', 'negative_frames_window',
   'start_speech_volume_threshold', 'interrupt_min_speech_frames', 'pre_speech_pad_frames',
-  'num_initial_ignored_frames',
+  'num_initial_ignored_frames', 'prompt', 'with_prompt',
 ];
 
 function value(object, ...keys) {
@@ -108,6 +108,12 @@ export function resolveSarvamSttConfiguration(providerConfig) {
     vad_signals: vadSignals,
     flush_signal: flushSignal,
   };
+  const defaultPrompt = 'Zea AI, Zea Brain, Zea Voice, ZeaCRM, Zea Play, URL Factory Private Limited, Software Solutions, Services';
+  const customPrompt = value(settings, 'sttPrompt', 'prompt', 'withPrompt', 'with_prompt', 'keywords') ?? defaultPrompt;
+  if (customPrompt) {
+    query['prompt'] = customPrompt;
+    query['with_prompt'] = customPrompt;
+  }
   for (const field of queryFields) {
     const camel = field.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
     const configured = value(settings, `stt${camel[0].toUpperCase()}${camel.slice(1)}`, camel, field);

@@ -1,4 +1,14 @@
 export const TAMIL_PHONETICS_MAP = {
+  "சாஃப்ட்வேர் சொல்யூஷன்ஸ்": "Software Solutions",
+  "சாப்ட்வேர் சொல்யூசன்ஸ்": "Software Solutions",
+  "சாஃப்ட்வேர் சொல்யூசன்": "Software Solutions",
+  "சாஃப்ட்வேர்": "Software",
+  "சொல்யூஷன்ஸ்": "Solutions",
+  "சொல்யூசன்ஸ்": "Solutions",
+  "சர்வீசஸ்": "Services",
+  "ப்ராடக்ட்ஸ்": "Products",
+  "யுஆர்எல் ஃபேக்டரி": "URL Factory",
+  "யு.ஆர்.எல். ஃபேக்டரி": "URL Factory",
   "ஜியா சியா ராமோட": "Zea CRM-oda",
   "ஜியா சியா ராம்": "Zea CRM",
   "ஜியா சிஆர்எம்": "Zea CRM",
@@ -14,6 +24,8 @@ export const TAMIL_PHONETICS_MAP = {
   "ஜியா பிரைன்": "Zea Brain",
   "ஜி ப்ரைன்": "Zea Brain",
   "ஜீ பிரைன்": "Zea Brain",
+  "ஜீ ஏஐ": "Zea AI",
+  "ஸியா ஏஐ": "Zea AI",
   "என்ன ஆள": "Zea AI",
   "ஸியா": "Zea AI"
 };
