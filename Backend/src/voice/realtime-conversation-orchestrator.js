@@ -177,8 +177,12 @@ export function configuredTechnicalFailureResponse(profile, knowledge = {}) {
 
 export function configuredInformationUnavailableResponse(profile, knowledge = {}) {
   const configured = resolveRuntimeMessage(profile, 'information_unavailable', knowledge);
-  if (configured && !isInternalRuntimeText(configured)) return configured;
-  return 'I do not have that specific information in my knowledge base right now. Is there anything else I can help you with?';
+  if (configured && !isInternalRuntimeText(configured) && !configured.includes('Staff')) return configured;
+  const lang = String(profile?.agent?.language ?? '').toLowerCase();
+  if (lang.startsWith('ta')) {
+    return 'Zea AI சூழலில் ZeaCRM, Zea Voice, Zea Play மற்றும் Zea Brain ஆகிய 4 தீர்வுகள் உள்ளன. உங்கள் நிறுவனத்தின் முக்கிய தேவை பற்றி கூறினால், எங்கள் குழு உங்களுக்கு உதவ முடியும்!';
+  }
+  return 'Zea AI Family provides ZeaCRM, Zea Voice, Zea Play, and Zea Brain. Could you share your specific business requirement so our team can assist you?';
 }
 
 export function llmOperationalFailureClass(error) {
