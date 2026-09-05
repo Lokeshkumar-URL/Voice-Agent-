@@ -13,6 +13,7 @@ export const TAMIL_PHONETICS_MAP = {
   "தியா பிரைன்": "Zea Brain",
   "ஜியா பிரைன்": "Zea Brain",
   "ஜி ப்ரைன்": "Zea Brain",
+  "ஜீ பிரைன்": "Zea Brain",
   "என்ன ஆள": "Zea AI",
   "ஸியா": "Zea AI"
 };
