@@ -10,7 +10,9 @@ export const TAMIL_PHONETICS_MAP = {
   "ஸீ வாய்ஸ்னா": "Zea Voice-na",
   "ஸீ வாய்ஸ்": "Zea Voice",
   "தியா பிரைன்": "Zea Brain",
-  "ஜியா பிரைன்": "Zea Brain"
+  "ஜியா பிரைன்": "Zea Brain",
+  "ஜி ப்ரைன்": "Zea Brain",
+  "என்ன ஆள": "Zea AI"
 };
 
 export function normalizeTranscript(text, languageCode) {
