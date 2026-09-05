@@ -46,11 +46,11 @@ function parseFaq(extraction) {
     current = null;
   };
   for (const line of lines) {
-    const explicitQuestion = line.text.match(/^(?:q|question)\s*[:.)-]\s*(.+)$/i);
-    const explicitAliases = line.text.match(/^aliases?\s*:\s*(.+)$/i);
-    const explicitCatalogReferences = line.text.match(/^catalog_references?\s*:\s*(.+)$/i);
-    const explicitIntentClass = line.text.match(/^intent_class\s*:\s*(.+)$/i);
-    const explicitAnswer = line.text.match(/^(?:a|answer)\s*[:.)-]\s*(.*)$/i);
+    const explicitQuestion = line.text.match(/^(?:q|question)\s*\d*\s*[:.)-]\s*(.+)$/i);
+    const explicitAliases = line.text.match(/^(?:aliases?|synonyms?|keywords?)\s*[:.)-]\s*(.+)$/i);
+    const explicitCatalogReferences = line.text.match(/^catalog_references?\s*[:.)-]\s*(.+)$/i);
+    const explicitIntentClass = line.text.match(/^intent_class\s*[:.)-]\s*(.+)$/i);
+    const explicitAnswer = line.text.match(/^(?:a|answer)\s*\d*\s*[:.)-]\s*(.*)$/i);
     if (explicitAliases && current) {
       current.aliases.push(...explicitAliases[1].split('|').map((value) => value.trim()).filter(Boolean));
       current.lastPageNumber = line.pageNumber;

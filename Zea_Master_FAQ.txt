@@ -1,0 +1,55 @@
+Q: What is Zea AI Family?
+Aliases: Zea AI Family | Zea AI Family-na enna | Zea AI | what products do you have | உங்ககிட்ட என்னென்ன சாஃப்ட்வேர் இருக்கு | உங்ககிட்ட என்ன சர்வீசஸ் இருக்கு | சாஃப்ட்வேர் சொல்யூஷன்ஸ் | software solutions
+A: Zea AI Family is an integrated AI business ecosystem from URL Factory Private Limited. It has four core products: ZeaCRM for customer management and sales, Zea Voice for 24/7 AI voice calling, Zea Play for gamified employee task management, and Zea Brain for company-wide AI knowledge retrieval.
+
+Q: What are the main products and services offered by Zea AI?
+Aliases: what services do you provide | உங்ககிட்ட என்னெண்ண சாஃப்ட்வேர் சொல்யூஷன்ஸ் இருக்கு | services | products | தயாரிப்புகள் | சேவைகள் | Zea products
+A: We provide four main AI solutions: 1. ZeaCRM (AI CRM & Sales Automation), 2. Zea Voice (24/7 AI Voice Agent for calling), 3. Zea Play (Gamified Employee Task & Performance Management), and 4. Zea Brain (Company-wide AI Knowledge Assistant).
+
+Q: What is ZeaCRM and how does it help my business?
+Aliases: ZeaCRM | சியராம் | சியாராம் | சிஆர்எம் | ZeaCRM-na enna | CRM software | lead management
+A: ZeaCRM is an AI-powered CRM and business automation platform. It manages your leads, customers, sales pipeline, follow-ups, appointments, tasks, quotations, and invoicing in one centralized place, automating repetitive manual work.
+
+Q: What is Zea Voice and what can it do?
+Aliases: Zea Voice | ஜீ வாய்ஸ் | சி வாய்ஸ் | Zea Voice-na enna | AI voice agent | AI calling | 24/7 calling agent
+A: Zea Voice is a 24/7 AI Voice Agent that answers incoming calls, makes outbound sales calls, qualifies leads, books appointments, sends reminders, and syncs all conversation data directly into your CRM.
+
+Q: What is Zea Play and how does task management work?
+Aliases: Zea Play | ஜீ ப்ளே | Zea Play-na enna | employee productivity | task management | gamification
+A: Zea Play turns everyday employee work into gamified missions with XP, levels, badges, and leaderboards. It improves team productivity, task completion, and accountability without managers constantly chasing employees.
+
+Q: What is Zea Brain and how does company knowledge search work?
+Aliases: Zea Brain | ஜீ பிரைன் | தியா பிரைன் | Zea Brain-na enna | company knowledge | AI assistant for company
+A: Zea Brain acts like ChatGPT for your company, but trained and connected to your organization's internal documents, SOPs, HR policies, and business information for instant employee retrieval.
+
+Q: We are losing leads or having follow-up problems in sales. Which product do we need?
+Aliases: losing leads | follow up problem | leads stuck in excel | sales pipeline | சியராம் தேவை | lead tracking
+A: For missing leads, unassigned enquiries, or sales team follow-up problems, ZeaCRM is the ideal solution. It captures leads from all channels and automates the follow-up and pipeline process.
+
+Q: We miss customer calls or need AI to call our customers 24/7. Which product do we need?
+Aliases: miss customer calls | AI calling needed | appointment booking calls | 24/7 calls | call automation
+A: For missed calls, after-hours enquiries, or automated appointment and follow-up calls, Zea Voice is the perfect solution. It handles customer calls 24/7 in multiple languages.
+
+Q: Our employees don't complete tasks or managers keep chasing them. Which product do we need?
+Aliases: task incomplete | employee accountability | manager chasing | productivity problem | gamify tasks
+A: For team productivity, task tracking, and employee accountability, Zea Play is the ideal solution. It gamifies everyday tasks into missions and leaderboards.
+
+Q: Our company documents and SOPs are scattered. Which product do we need?
+Aliases: scattered documents | employee asking questions repeatedly | SOP search | company knowledge base
+A: For scattered company information and quick access to SOPs or policies, Zea Brain is the ideal solution. It gives management and employees instant AI-powered search across all company documents.
+
+Q: How can I buy or purchase Zea AI products?
+Aliases: பர்ச்சேஸ் | வாங்குவது எப்படி | வாங்கலாம் | விலை | கட்டணம் | how to buy | purchase | pricing | demo request | contact sales
+A: You can purchase Zea AI solutions by contacting our sales team at URL Factory Private Limited or requesting a demo. Our BDE will understand your workflow, recommend the right product package, and share pricing.
+
+Q: Is WhatsApp Business API integrated with ZeaCRM and what is the cost?
+Aliases: WhatsApp integration | WhatsApp API price | வாட்ஸ்அப் | WhatsApp cost | Meta charges
+A: Yes, ZeaCRM supports WhatsApp Business API integration. The add-on price is ₹2,000 per month, with Meta usage charges additional based on conversation volume.
+
+Q: Can Zea solutions be customized or integrated with our existing ERP/Software?
+Aliases: customization | custom software | ERP integration | API integration | customize for my business
+A: Yes! Zea solutions can be configured and customized based on your business workflow. We first evaluate your existing process, software/ERP APIs, and requirements to confirm technical feasibility and scope.
+
+Q: Who is URL Factory Private Limited?
+Aliases: URL Factory | company name | who owns Zea AI | யார்ZeA AI
+A: Zea AI Family is an integrated AI business product suite developed and owned by URL Factory Private Limited.
