@@ -617,10 +617,13 @@ function parseGeneralKnowledge(extraction) {
 
   const domainKeywordEnrichment = [
     { terms: [/software solutions/i, /software/i, /solutions/i], aliasText: 'Tamil Queries: சாஃப்ட்வேர் சொல்யூஷன்ஸ் | சாஃப்ட்வேர் | சொல்யூஷன்ஸ் | மென்பொருள் தீர்வுகள்' },
-    { terms: [/zea ai/i, /zea brain/i, /zea voice/i, /zeacrm/i, /zea play/i], aliasText: 'Tamil Queries: ஜீ ஏஐ | ஜீ பிரைன் | ஜீ வாய்ஸ் | ஜியா சிஆர்எம் | ஜீ ப்ளே' },
+    { terms: [/zea ai/i, /zea brain/i, /zea voice/i, /zeacrm/i, /zea play/i], aliasText: 'Tamil Queries: ஜீ ஏஐ | ஜீ பிரைன் | ஜீ வாய்ஸ் | ஜியா சிஆர்எம் | ஜீ ப்ளே | சியராம்' },
+    { terms: [/zeacrm/i, /crm/i, /lead qualification/i, /sales/i], aliasText: 'Tamil Queries: சியராம் | சியாராம் | சிஆர்எம் | ZeaCRM' },
+    { terms: [/purchase/i, /buy/i, /pricing/i, /cost/i, /onboarding/i, /contact/i, /demo/i, /get started/i, /sales/i], aliasText: 'Tamil Queries: பர்ச்சேஸ் | வாங்குவது எப்படி | வாங்கலாம் | விலை | கட்டணம் | வாங்குவது | வாங்க' },
     { terms: [/services/i, /service/i], aliasText: 'Tamil Queries: சர்வீசஸ் | சேவைகள்' },
     { terms: [/products/i, /product/i, /ecosystem/i], aliasText: 'Tamil Queries: ப்ராடக்ட்ஸ் | தயாரிப்புகள்' },
     { terms: [/url factory/i], aliasText: 'Tamil Queries: யுஆர்எல் ஃபேக்டரி' },
+    { terms: [/hello/i, /welcome/i, /greeting/i, /introduction/i, /who you are/i], aliasText: 'Tamil Queries: ஹலோ | வணக்கம் | சொல்லுங்க' },
   ];
 
   for (let start = 0; start < words.length; start += size - overlap) {
