@@ -36,7 +36,10 @@ export const TAMIL_PHONETICS_MAP = {
   "ஜீ ஏஐ": "Zea AI",
   "ஸியா ஏஐ": "Zea AI",
   "என்ன ஆள": "Zea AI",
-  "ஸியா": "Zea AI"
+  "ஸியா": "Zea AI",
+  "ஏஐ": "AI",
+  "ஏ.ஐ": "AI",
+  "ஏ ஐ": "AI"
 };
 
 export function normalizeTranscript(text, languageCode) {
